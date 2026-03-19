@@ -1,5 +1,3 @@
-import { PetalAnimation } from "@/components/ui/PetalAnimation";
-
 export function HeroSection() {
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -9,8 +7,6 @@ export function HeroSection() {
 
   return (
     <section className="from-blossom-100 to-blossom-50 relative overflow-hidden bg-gradient-to-b py-20 text-center">
-      <PetalAnimation count={14} />
-
       {/* 배경 손그림 장식 */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.04]">
         <svg
