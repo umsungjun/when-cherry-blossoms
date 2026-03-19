@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+
+@theme {
+  --color-blossom-50: #fff0f8;
+  --color-blossom-100: #fce4ec;
+  --color-blossom-200: #f8bbd9;
+  --color-blossom-300: #f48fb1;
+  --color-blossom-400: #e91e8c;
+  --color-blossom-500: #d81b60;
+  --color-blossom-600: #c2185b;
+  --color-blossom-700: #ad1457;
+  --color-blossom-800: #880e4f;
+  --color-blossom-900: #1a0a10;
+  --color-status-before: #9e9e9e;
+  --color-status-blooming: #e91e8c;
+  --color-status-peak: #c2185b;
+  --color-status-falling: #ff8a65;
+  --color-status-done: #bdbdbd;
+  --color-risk-low: #4caf50;
+  --color-risk-medium: #ff9800;
+  --color-risk-high: #f44336;
+  --color-risk-extreme: #7b1fa2;
+  --font-sans:
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+}
+
+:root {
+  --background: #fff0f8;
+  --foreground: #1a0a10;
+  --card: #ffffff;
+  --card-border: #f8bbd9;
+  --muted: #fce4ec;
+  --muted-foreground: #9e5e72;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+@keyframes petalFall {
+  0% {
+    transform: translateY(-5vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(25vh) translateX(20px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(-15px) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(75vh) translateX(25px) rotate(270deg);
+  }
+  100% {
+    transform: translateY(105vh) translateX(-10px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-petal-fall {
+  animation: petalFall linear infinite;
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-blossom-100) 25%,
+    var(--color-blossom-50) 50%,
+    var(--color-blossom-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* 카드 유틸리티 */
+.card {
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.card-hover {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244, 143, 177, 0.18);
+}
+
+/* AI 챗봇 로딩 점 애니메이션 */
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 1.2s ease-in-out infinite;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-blossom-50);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-blossom-300);
+  border-radius: 3px;
+}
