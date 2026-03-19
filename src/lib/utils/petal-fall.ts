@@ -99,8 +99,8 @@ export const RISK_LABEL: Record<PetalFallRisk["level"], string> = {
 
 /** 위험도 색상 클래스 */
 export const RISK_COLOR: Record<PetalFallRisk["level"], string> = {
-  low: "text-green-600 bg-green-50",
-  medium: "text-orange-500 bg-orange-50",
-  high: "text-red-500 bg-red-50",
-  extreme: "text-purple-600 bg-purple-50",
+  low: "text-green-400 bg-[#0a2010]",
+  medium: "text-orange-400 bg-[#2d1a10]",
+  high: "text-red-400 bg-[#2d1010]",
+  extreme: "text-purple-400 bg-[#1a1028]",
 };

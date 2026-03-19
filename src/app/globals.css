@@ -6,37 +6,55 @@
   --color-blossom-100: #fce4ec;
   --color-blossom-200: #f8bbd9;
   --color-blossom-300: #f48fb1;
-  --color-blossom-400: #e91e8c;
-  --color-blossom-500: #d81b60;
+  --color-blossom-400: #ff4da6;
+  --color-blossom-500: #e91e8c;
   --color-blossom-600: #c2185b;
   --color-blossom-700: #ad1457;
   --color-blossom-800: #880e4f;
-  --color-blossom-900: #1a0a10;
+  --color-blossom-900: #5c0a30;
+  /* 차콜 — 따뜻한 회색 */
+  --color-charcoal-950: #1c1320;
+  --color-charcoal-900: #2b1c28;
+  --color-charcoal-800: #3e2a38;
+  --color-charcoal-700: #5a3d52;
+  --color-charcoal-600: #7a5568;
+  --color-charcoal-500: #9e7285;
+  --color-charcoal-400: #c09aaa;
+  --color-charcoal-300: #dfc4ce;
+  --color-charcoal-200: #f2e4ea;
+  --color-charcoal-100: #faf0f4;
+  /* 개화 상태 */
   --color-status-before: #9e9e9e;
-  --color-status-blooming: #e91e8c;
+  --color-status-blooming: #ff4da6;
   --color-status-peak: #c2185b;
   --color-status-falling: #ff8a65;
   --color-status-done: #bdbdbd;
-  --color-risk-low: #4caf50;
-  --color-risk-medium: #ff9800;
-  --color-risk-high: #f44336;
-  --color-risk-extreme: #7b1fa2;
+  /* Dark Sakura 배경 토큰 */
+  --color-sakura-950: #0d0812;
+  --color-sakura-900: #1a1020;
+  --color-sakura-800: #2d1535;
+  --color-sakura-700: #3d1545;
+  --color-sakura-600: #5a1f60;
   --font-sans:
     "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
     system-ui, sans-serif;
 }
 
 :root {
-  --background: #fff0f8;
-  --foreground: #1a0a10;
-  --card: #ffffff;
-  --card-border: #f8bbd9;
-  --muted: #fce4ec;
-  --muted-foreground: #9e5e72;
+  --background: #0d0812;
+  --foreground: #ffd6e8;
+  --card: #1a1020;
+  --card-border: rgba(255, 77, 166, 0.2);
+  --muted: #2d1535;
+  --muted-foreground: #9e6a7e;
 }
 
 * {
   box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
 }
 
 html {
@@ -51,25 +69,14 @@ body {
   line-height: 1.6;
 }
 
-
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .animate-fade-in-up {
@@ -79,57 +86,45 @@ body {
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-blossom-100) 25%,
-    var(--color-blossom-50) 50%,
-    var(--color-blossom-100) 75%
+    #2d1535 25%,
+    #3d1545 50%,
+    #2d1535 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-/* 카드 유틸리티 */
+/* 카드 */
 .card {
   border-radius: 1rem;
   border: 1px solid var(--card-border);
   background: var(--card);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 16px rgba(255, 77, 166, 0.06);
 }
 
 .card-hover {
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(244, 143, 177, 0.18);
+  border-color: rgba(255, 77, 166, 0.5);
+  box-shadow: 0 8px 28px rgba(255, 77, 166, 0.16);
 }
 
-/* AI 챗봇 로딩 점 애니메이션 */
+/* AI 챗봇 로딩 점 */
 @keyframes pulseSoft {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.75);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
 }
 
 .animate-pulse-soft {
   animation: pulseSoft 1.2s ease-in-out infinite;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-blossom-50);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-blossom-300);
-  border-radius: 3px;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1a1020; }
+::-webkit-scrollbar-thumb { background: #3d1545; border-radius: 3px; }

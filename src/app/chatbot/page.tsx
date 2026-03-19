@@ -1,26 +1,23 @@
 import { Metadata } from "next";
 
+import { Bot } from "lucide-react";
+
 import { AIChatPanel } from "@/components/chatbot/AIChatPanel";
 
 export const metadata: Metadata = {
   title: "AI 벚꽃 도우미 | 벚꽃 언제 필까?",
-  description:
-    "Gemini 2.0 Flash AI가 현재 전국 벚꽃 개화 상황을 바탕으로 여행지를 추천해드려요.",
+  description: "Gemini 2.0 Flash AI가 현재 전국 벚꽃 개화 상황을 바탕으로 여행지를 추천해드려요.",
 };
 
 export default function ChatbotPage() {
   return (
-    <div
-      className="mx-auto flex max-w-2xl flex-col px-4 py-6"
-      style={{ height: "calc(100vh - 120px)" }}
-    >
+    <div className="mx-auto flex max-w-2xl flex-col px-4 py-6" style={{ height: "calc(100vh - 120px)" }}>
       <div className="mb-4">
-        <h1 className="text-blossom-900 text-xl font-extrabold">
-          🤖 AI 벚꽃 도우미
+        <h1 className="flex items-center gap-2 text-xl font-extrabold text-[#ffd6e8]">
+          <Bot size={22} className="text-[#ff4da6]" />
+          AI 벚꽃 도우미
         </h1>
-        <p className="mt-0.5 text-xs text-gray-400">
-          Gemini 2.0 Flash · 현재 개화 현황 반영
-        </p>
+        <p className="mt-0.5 text-xs text-[#9e6a7e]">Gemini 2.0 Flash · 현재 개화 현황 반영</p>
       </div>
       <div className="card flex-1 overflow-hidden">
         <AIChatPanel />

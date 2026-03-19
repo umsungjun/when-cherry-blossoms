@@ -65,9 +65,9 @@ export const BLOOM_STATUS_LABEL: Record<BloomStatus, string> = {
 
 /** 상태별 색상 클래스 */
 export const BLOOM_STATUS_COLOR: Record<BloomStatus, string> = {
-  before: "text-gray-500 bg-gray-100",
-  blooming: "text-blossom-400 bg-blossom-50",
-  peak: "text-blossom-600 bg-blossom-100",
-  falling: "text-orange-500 bg-orange-50",
-  done: "text-gray-400 bg-gray-50",
+  before: "text-[#9e6a7e] bg-[#2d1535]",
+  blooming: "text-[#ff80c0] bg-[#3d1545]",
+  peak: "text-[#ff4da6] bg-[#4d1555]",
+  falling: "text-orange-400 bg-[#3d2020]",
+  done: "text-[#7a4558] bg-[#2d1535]",
 };

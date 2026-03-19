@@ -1,11 +1,30 @@
+import { Github, Linkedin } from "lucide-react";
+
 export function Footer() {
   return (
-    <footer className="border-blossom-100 border-t bg-white py-6 text-center text-xs text-gray-400">
-      <p>
-        🌸 벚꽃 언제 필까? · 개화 데이터는 기상청 예보 기반이며 실제와 다를 수
-        있습니다
-      </p>
-      <p className="mt-1">날씨 데이터: Open-Meteo · AI: Gemini 2.0 Flash</p>
+    <footer className="border-t border-[rgba(255,77,166,0.15)] bg-sakura-950 py-6 text-center text-xs text-[#9e6a7e]">
+      <p>벚꽃 언제 필까? · 개화 데이터는 기상청 예보 기반이며 실제와 다를 수 있습니다</p>
+      <p className="mt-1 text-[#7a4558]">날씨 데이터: Open-Meteo · AI: Gemini 2.0 Flash</p>
+      <div className="mt-3 flex items-center justify-center gap-4">
+        <a
+          href="https://github.com/umsungjun"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-[#9e6a7e] transition-colors hover:text-[#ff4da6]"
+        >
+          <Github size={14} />
+          umsungjun
+        </a>
+        <a
+          href="https://www.linkedin.com/in/frontend-developer-umsungjun/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-[#9e6a7e] transition-colors hover:text-[#ff4da6]"
+        >
+          <Linkedin size={14} />
+          frontend-developer-umsungjun
+        </a>
+      </div>
     </footer>
   );
 }

@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-import { Bot, Send, Trash2 } from "lucide-react";
+import { Bot, Flower2, Send, Trash2 } from "lucide-react";
 
 import { useAIChat } from "@/lib/hooks/useAIChat";
 import { cn } from "@/lib/utils/cn";
@@ -16,15 +16,12 @@ const QUICK_PROMPTS = [
 ];
 
 export function AIChatPanel() {
-  const { messages, isLoading, error, sendMessage, clearMessages } =
-    useAIChat();
+  const { messages, isLoading, error, sendMessage, clearMessages } = useAIChat();
   const [input, setInput] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isLoading]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -43,22 +40,14 @@ export function AIChatPanel() {
   return (
     <div className="flex h-full flex-col">
       {/* 헤더 */}
-      <div className="border-blossom-100 flex items-center justify-between border-b px-4 py-3">
+      <div className="flex items-center justify-between border-b border-[rgba(255,77,166,0.2)] px-4 py-3">
         <div className="flex items-center gap-2">
-          <Bot size={18} className="text-blossom-500" />
-          <span className="text-blossom-900 text-sm font-semibold">
-            벚꽃 AI 도우미
-          </span>
-          <span className="bg-blossom-100 text-blossom-500 rounded-full px-2 py-0.5 text-xs">
-            Gemini 2.0 Flash
-          </span>
+          <Bot size={18} className="text-[#ff4da6]" />
+          <span className="text-sm font-semibold text-[#ffd6e8]">벚꽃 AI 도우미</span>
+          <span className="rounded-full bg-sakura-800 px-2 py-0.5 text-xs text-[#ff80c0]">Gemini 2.0 Flash</span>
         </div>
         {messages.length > 0 && (
-          <button
-            onClick={clearMessages}
-            className="text-gray-300 transition-colors hover:text-gray-500"
-            title="대화 초기화"
-          >
+          <button onClick={clearMessages} className="text-[#5a3048] transition-colors hover:text-[#ff4da6]" title="대화 초기화">
             <Trash2 size={15} />
           </button>
         )}
@@ -68,16 +57,14 @@ export function AIChatPanel() {
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
           <div className="space-y-3 py-4">
-            <p className="text-center text-sm text-gray-400">
-              🌸 벚꽃 여행에 대해 무엇이든 물어보세요!
+            <p className="flex items-center justify-center gap-1.5 text-center text-sm text-[#9e6a7e]">
+              <Flower2 size={14} className="text-[#ff4da6]" />
+              벚꽃 여행에 대해 무엇이든 물어보세요!
             </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {QUICK_PROMPTS.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => sendMessage(p)}
-                  className="border-blossom-200 hover:border-blossom-300 hover:bg-blossom-50 rounded-xl border bg-white px-3 py-2 text-left text-xs text-gray-600 transition-colors"
-                >
+                <button key={p} onClick={() => sendMessage(p)}
+                  className="rounded-xl border border-[rgba(255,77,166,0.2)] bg-sakura-900 px-3 py-2 text-left text-xs text-[#c090a8] transition-colors hover:border-[#ff4da6] hover:text-[#ff4da6]">
                   {p}
                 </button>
               ))}
@@ -86,58 +73,32 @@ export function AIChatPanel() {
         )}
 
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={cn(
-              "flex",
-              msg.role === "user" ? "justify-end" : "justify-start"
-            )}
-          >
-            <div
-              className={cn(
-                "max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
-                msg.role === "user"
-                  ? "bg-blossom-600 rounded-tr-sm text-white"
-                  : "border-blossom-100 rounded-tl-sm border bg-white text-gray-700"
-              )}
-            >
+          <div key={msg.id} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
+            <div className={cn(
+              "max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+              msg.role === "user"
+                ? "rounded-tr-sm bg-[#ff4da6] text-white"
+                : "rounded-tl-sm border border-[rgba(255,77,166,0.2)] bg-sakura-900 text-[#e8c0d4]"
+            )}>
               {msg.role === "ai" ? (
-                <ReactMarkdown
-                  components={{
-                    p: ({ children }) => (
-                      <p className="mb-1 last:mb-0">{children}</p>
-                    ),
-                    strong: ({ children }) => (
-                      <strong className="text-blossom-700 font-semibold">
-                        {children}
-                      </strong>
-                    ),
-                    code: ({ children }) => (
-                      <code className="bg-blossom-50 text-blossom-600 rounded px-1 py-0.5 font-mono text-xs">
-                        {children}
-                      </code>
-                    ),
-                  }}
-                >
+                <ReactMarkdown components={{
+                  p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                  strong: ({ children }) => <strong className="font-semibold text-[#ff80c0]">{children}</strong>,
+                  code: ({ children }) => <code className="rounded bg-sakura-800 px-1 py-0.5 font-mono text-xs text-[#ff4da6]">{children}</code>,
+                }}>
                   {msg.content}
                 </ReactMarkdown>
-              ) : (
-                msg.content
-              )}
+              ) : msg.content}
             </div>
           </div>
         ))}
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="border-blossom-100 rounded-2xl rounded-tl-sm border bg-white px-4 py-3">
+            <div className="rounded-2xl rounded-tl-sm border border-[rgba(255,77,166,0.2)] bg-sakura-900 px-4 py-3">
               <div className="flex gap-1">
                 {[0, 150, 300].map((delay) => (
-                  <div
-                    key={delay}
-                    className="bg-blossom-300 animate-pulse-soft h-1.5 w-1.5 rounded-full"
-                    style={{ animationDelay: `${delay}ms` }}
-                  />
+                  <div key={delay} className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-[#ff4da6]" style={{ animationDelay: `${delay}ms` }} />
                 ))}
               </div>
             </div>
@@ -145,15 +106,11 @@ export function AIChatPanel() {
         )}
 
         {error && <p className="text-center text-xs text-red-400">{error}</p>}
-
         <div ref={bottomRef} />
       </div>
 
       {/* 입력 영역 */}
-      <form
-        onSubmit={handleSubmit}
-        className="border-blossom-100 flex items-end gap-2 border-t p-3"
-      >
+      <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-[rgba(255,77,166,0.2)] p-3">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -163,19 +120,15 @@ export function AIChatPanel() {
           placeholder="벚꽃에 대해 물어보세요..."
           maxLength={500}
           rows={1}
-          className="border-blossom-200 focus:border-blossom-400 max-h-28 flex-1 resize-none rounded-xl border px-3 py-2 text-sm transition-colors outline-none placeholder:text-gray-300"
+          className="max-h-28 flex-1 resize-none rounded-xl border border-[rgba(255,77,166,0.2)] bg-sakura-900 px-3 py-2 text-sm text-[#ffd6e8] outline-none transition-colors placeholder:text-[#5a3048] focus:border-[#ff4da6]"
           style={{ scrollbarWidth: "none" }}
         />
-        <button
-          type="submit"
-          disabled={isLoading || !input.trim()}
-          className={cn(
-            "rounded-xl p-2.5 transition-all",
+        <button type="submit" disabled={isLoading || !input.trim()}
+          className={cn("rounded-xl p-2.5 transition-all",
             input.trim() && !isLoading
-              ? "bg-blossom-600 hover:bg-blossom-700 text-white"
-              : "cursor-not-allowed bg-gray-100 text-gray-300"
-          )}
-        >
+              ? "bg-[#ff4da6] text-white hover:bg-[#e0358a]"
+              : "cursor-not-allowed bg-sakura-800 text-[#5a3048]"
+          )}>
           <Send size={16} />
         </button>
       </form>
