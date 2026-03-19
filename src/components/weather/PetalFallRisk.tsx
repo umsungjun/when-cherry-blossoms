@@ -25,14 +25,14 @@ export function PetalFallRisk({ risk, compact = false, className }: Props) {
         <div className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", RISK_COLOR[level])}>
           낙화 위험 {RISK_LABEL[level]}
         </div>
-        <span className="text-xs text-[#9e6a7e]">{score}점</span>
+        <span className="text-xs text-text-muted">{score}점</span>
       </div>
     );
   }
 
   return (
     <div className={cn("space-y-3", className)}>
-      <h3 className="text-sm font-semibold text-[#c090a8]">낙화 위험도</h3>
+      <h3 className="text-sm font-semibold text-text-secondary">낙화 위험도</h3>
 
       <div className="flex flex-col items-center gap-1">
         <svg width="100" height="55" viewBox="-5 -5 110 60">
@@ -50,22 +50,22 @@ export function PetalFallRisk({ risk, compact = false, className }: Props) {
 
       <div className="space-y-1.5 text-xs">
         <div className="flex items-center gap-2">
-          <span className="flex w-12 items-center gap-1 text-[#9e6a7e]"><CloudRain size={11} /> 비</span>
+          <span className="flex w-12 items-center gap-1 text-text-muted"><CloudRain size={11} /> 비</span>
           <div className="h-1.5 flex-1 rounded-full bg-sakura-800">
             <div className="h-full rounded-full bg-blue-400 transition-all duration-500" style={{ width: `${rainContribution}%` }} />
           </div>
-          <span className="w-8 text-right text-[#7a4558]">{rainContribution}%</span>
+          <span className="w-8 text-right text-text-dim">{rainContribution}%</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="flex w-12 items-center gap-1 text-[#9e6a7e]"><Wind size={11} /> 바람</span>
+          <span className="flex w-12 items-center gap-1 text-text-muted"><Wind size={11} /> 바람</span>
           <div className="h-1.5 flex-1 rounded-full bg-sakura-800">
             <div className="h-full rounded-full bg-orange-400 transition-all duration-500" style={{ width: `${windContribution}%` }} />
           </div>
-          <span className="w-8 text-right text-[#7a4558]">{windContribution}%</span>
+          <span className="w-8 text-right text-text-dim">{windContribution}%</span>
         </div>
       </div>
 
-      <p className="rounded-lg bg-sakura-800 px-3 py-2 text-center text-xs text-[#c090a8]">
+      <p className="rounded-lg bg-sakura-800 px-3 py-2 text-center text-xs text-text-secondary">
         {recommendation}
       </p>
     </div>

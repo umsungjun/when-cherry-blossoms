@@ -13,11 +13,11 @@ export default function ChatbotPage() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col px-4 py-6" style={{ height: "calc(100vh - 120px)" }}>
       <div className="mb-4">
-        <h1 className="flex items-center gap-2 text-xl font-extrabold text-[#ffd6e8]">
+        <h1 className="flex items-center gap-2 text-xl font-extrabold text-text-primary">
           <Bot size={22} className="text-[#ff4da6]" />
           AI 벚꽃 도우미
         </h1>
-        <p className="mt-0.5 text-xs text-[#9e6a7e]">Gemini 2.0 Flash · 현재 개화 현황 반영</p>
+        <p className="mt-0.5 text-xs text-text-muted">Gemini 2.0 Flash · 현재 개화 현황 반영</p>
       </div>
       <div className="card flex-1 overflow-hidden">
         <AIChatPanel />

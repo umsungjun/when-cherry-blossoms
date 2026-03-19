@@ -30,10 +30,10 @@ export default function HomePage() {
 
   const activeStats = (
     [
-      { key: "peak"    as BloomStatus, icon: <Flower2 size={13} />, color: "text-[#ff4da6] bg-[#4d1555]" },
-      { key: "blooming"as BloomStatus, icon: <Flower  size={13} />, color: "text-[#ff80c0] bg-[#3d1545]" },
-      { key: "before"  as BloomStatus, icon: <Sprout  size={13} />, color: "text-[#9e6a7e] bg-[#2d1535]" },
-      { key: "falling" as BloomStatus, icon: <Leaf    size={13} />, color: "text-orange-400 bg-[#3d2020]" },
+      { key: "peak"    as BloomStatus, icon: <Flower2 size={13} />, color: "text-[#ff4da6] bg-sakura-700" },
+      { key: "blooming"as BloomStatus, icon: <Flower  size={13} />, color: "text-accent-light bg-sakura-700" },
+      { key: "before"  as BloomStatus, icon: <Sprout  size={13} />, color: "text-text-muted bg-sakura-800" },
+      { key: "falling" as BloomStatus, icon: <Leaf    size={13} />, color: "text-orange-400 bg-status-falling-bg" },
     ] as const
   ).filter((s) => stats[s.key] > 0);
 
@@ -44,7 +44,7 @@ export default function HomePage() {
       <div className="mx-auto max-w-5xl space-y-10 px-4 py-10">
         {/* 전국 현황 */}
         <section>
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-[#ffd6e8]">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-text-primary">
             <BarChart3 size={18} className="text-[#ff4da6]" />
             전국 벚꽃 현황
           </h2>
@@ -61,11 +61,11 @@ export default function HomePage() {
         {topRegions.length > 0 && (
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-[#ffd6e8]">
+              <h2 className="flex items-center gap-2 text-lg font-bold text-text-primary">
                 <Sparkles size={18} className="text-[#ff4da6]" />
                 오늘 가기 좋은 곳
               </h2>
-              <Link href="/regions" className="text-xs text-[#9e6a7e] transition-colors hover:text-[#ff4da6]">
+              <Link href="/regions" className="text-xs text-text-muted transition-colors hover:text-[#ff4da6]">
                 전체 보기 →
               </Link>
             </div>
@@ -96,11 +96,11 @@ export default function HomePage() {
         {/* 전국 지역 리스트 */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-[#ffd6e8]">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-text-primary">
               <Map size={18} className="text-[#ff4da6]" />
               전국 지역별 예보
             </h2>
-            <Link href="/regions" className="text-xs text-[#9e6a7e] transition-colors hover:text-[#ff4da6]">
+            <Link href="/regions" className="text-xs text-text-muted transition-colors hover:text-[#ff4da6]">
               전체 보기 →
             </Link>
           </div>

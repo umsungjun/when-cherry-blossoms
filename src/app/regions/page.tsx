@@ -33,11 +33,11 @@ export default function RegionsPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="flex items-center gap-2 text-2xl font-extrabold text-[#ffd6e8]">
+        <h1 className="flex items-center gap-2 text-2xl font-extrabold text-text-primary">
           <Map size={22} className="text-[#ff4da6]" />
           전국 벚꽃 예보
         </h1>
-        <p className="mt-1 text-sm text-[#9e6a7e]">2026년 기상청 예보 기반 · 매시간 갱신</p>
+        <p className="mt-1 text-sm text-text-muted">2026년 기상청 예보 기반 · 매시간 갱신</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -51,11 +51,11 @@ export default function RegionsPage() {
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
                 activeTab === key
                   ? "bg-[#ff4da6] text-white shadow-sm"
-                  : "border border-[rgba(255,77,166,0.2)] bg-sakura-900 text-[#c090a8] hover:border-[#ff4da6] hover:text-[#ff4da6]"
+                  : "border border-[rgba(255,77,166,0.2)] bg-sakura-900 text-text-secondary hover:border-[#ff4da6] hover:text-[#ff4da6]"
               }`}
             >
               {icon} {label}
-              <span className={`rounded-full px-1.5 py-0.5 text-xs ${activeTab === key ? "bg-white/20 text-white" : "bg-sakura-800 text-[#9e6a7e]"}`}>
+              <span className={`rounded-full px-1.5 py-0.5 text-xs ${activeTab === key ? "bg-white/20 text-white" : "bg-sakura-800 text-text-muted"}`}>
                 {count}
               </span>
             </button>
@@ -64,7 +64,7 @@ export default function RegionsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="py-16 text-center text-sm text-[#9e6a7e]">해당 상태의 지역이 없어요</p>
+        <p className="py-16 text-center text-sm text-text-muted">해당 상태의 지역이 없어요</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((r) => <RegionCard key={r.id} region={r} />)}

@@ -41,12 +41,12 @@ export function CommentSection({ regionId }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-2 text-base font-bold text-[#ffd6e8]">
+        <h3 className="flex items-center gap-2 text-base font-bold text-text-primary">
           <MessageCircle size={16} className="text-[#ff4da6]" />
           현장 이야기 ({comments.length})
         </h3>
         {nickname && (
-          <button onClick={() => setShowNicknameModal(true)} className="text-xs text-[#9e6a7e] transition-colors hover:text-[#ff4da6]">
+          <button onClick={() => setShowNicknameModal(true)} className="text-xs text-text-muted transition-colors hover:text-[#ff4da6]">
             {nickname} ✏️
           </button>
         )}
@@ -58,14 +58,14 @@ export function CommentSection({ regionId }: Props) {
           onChange={(e) => setContent(e.target.value)}
           maxLength={200}
           placeholder={nickname ? `${nickname}으로 남기기...` : "닉네임 설정 후 작성 가능"}
-          className="flex-1 rounded-xl border border-[rgba(255,77,166,0.2)] bg-sakura-900 px-3 py-2 text-sm text-[#ffd6e8] outline-none transition-colors placeholder:text-[#5a3048] focus:border-[#ff4da6]"
+          className="flex-1 rounded-xl border border-[rgba(255,77,166,0.2)] bg-sakura-900 px-3 py-2 text-sm text-text-primary outline-none transition-colors placeholder:text-text-faint focus:border-[#ff4da6]"
         />
         <button
           type="submit"
           disabled={submitting || !content.trim()}
           className={cn(
             "flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all",
-            content.trim() ? "bg-[#ff4da6] text-white hover:bg-[#e0358a]" : "cursor-not-allowed bg-sakura-800 text-[#5a3048]"
+            content.trim() ? "bg-[#ff4da6] text-white hover:bg-[#e0358a]" : "cursor-not-allowed bg-sakura-800 text-text-faint"
           )}
         >
           <Send size={14} />
@@ -73,18 +73,18 @@ export function CommentSection({ regionId }: Props) {
       </form>
 
       {loading ? (
-        <p className="py-4 text-center text-xs text-[#9e6a7e]">불러오는 중...</p>
+        <p className="py-4 text-center text-xs text-text-muted">불러오는 중...</p>
       ) : comments.length === 0 ? (
-        <p className="py-6 text-center text-xs text-[#9e6a7e]">첫 번째 현장 이야기를 남겨보세요</p>
+        <p className="py-6 text-center text-xs text-text-muted">첫 번째 현장 이야기를 남겨보세요</p>
       ) : (
         <ul className="space-y-2">
           {comments.map((c) => (
             <li key={c.id} className="rounded-xl border border-[rgba(255,77,166,0.15)] bg-sakura-900 px-3 py-2.5">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#ff80c0]">{c.nickname}</span>
-                <span className="text-xs text-[#5a3048]">{timeAgo(c.createdAt)}</span>
+                <span className="text-xs font-semibold text-accent-light">{c.nickname}</span>
+                <span className="text-xs text-text-faint">{timeAgo(c.createdAt)}</span>
               </div>
-              <p className="text-sm leading-relaxed text-[#c090a8]">{c.content}</p>
+              <p className="text-sm leading-relaxed text-text-secondary">{c.content}</p>
             </li>
           ))}
         </ul>

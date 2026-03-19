@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Palette Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, sans-serif; background: #111; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; min-height: 100vh; }
+
+    .panel { display: flex; flex-direction: column; overflow: hidden; }
+
+    /* 공통 미리보기 레이아웃 */
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; font-size: 13px; font-weight: 700; }
+    .hero { padding: 40px 24px; text-align: center; position: relative; overflow: hidden; }
+    .hero-label { font-size: 11px; font-weight: 600; margin-bottom: 8px; opacity: 0.7; }
+    .hero-title { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+    .hero-sub { font-size: 13px; opacity: 0.8; margin-bottom: 20px; }
+    .hero-btn { display: inline-block; padding: 10px 24px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 16px; flex: 1; }
+    .card { border-radius: 12px; padding: 12px; }
+    .card-city { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .card-sub { font-size: 10px; opacity: 0.6; margin-bottom: 8px; }
+    .bar-track { height: 4px; border-radius: 2px; margin-bottom: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 2px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 700; }
+    .panel-label { text-align: center; padding: 8px; font-size: 11px; font-weight: 600; background: #222; color: #aaa; }
+    .banner { margin: 0 16px 16px; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .banner-text { font-size: 11px; opacity: 0.7; margin-bottom: 2px; }
+    .banner-title { font-size: 15px; font-weight: 700; }
+
+    /* ── A. Dark Sakura ── */
+    .a .header  { background: #0d0812; color: #ffd6e8; border-bottom: 1px solid #2d1535; }
+    .a .hero    { background: linear-gradient(135deg, #ff4da6, #c2185b); }
+    .a .hero *  { color: #fff; }
+    .a .hero-btn { background: #0d0812; color: #ff4da6; }
+    .a .cards   { background: #0d0812; }
+    .a .card    { background: #1a1020; border: 1px solid #3d1545; }
+    .a .card-city { color: #ffd6e8; }
+    .a .card-sub  { color: #9e6a7e; }
+    .a .bar-track { background: #2d1535; }
+    .a .bar-fill  { background: #ff4da6; }
+    .a .badge   { background: #ff4da6; color: #fff; }
+    .a .banner  { background: linear-gradient(to right, #1a1020, #2d1535); border: 1px solid #3d1545; }
+    .a .banner * { color: #ffd6e8; }
+
+    /* ── B. Cream & Burgundy ── */
+    .b .header  { background: #fff; color: #2a0a18; border-bottom: 1px solid #f0c0d0; }
+    .b .hero    { background: linear-gradient(135deg, #8b1a4a, #c2185b); }
+    .b .hero *  { color: #fff; }
+    .b .hero-btn { background: #fff; color: #8b1a4a; }
+    .b .cards   { background: #fef6f0; }
+    .b .card    { background: #fff; border: 1px solid #f0c0d0; }
+    .b .card-city { color: #2a0a18; }
+    .b .card-sub  { color: #9e6a7e; }
+    .b .bar-track { background: #fce4ec; }
+    .b .bar-fill  { background: #c2185b; }
+    .b .badge   { background: #fce4ec; color: #c2185b; }
+    .b .banner  { background: linear-gradient(to right, #8b1a4a, #c2185b); }
+    .b .banner * { color: #fff; }
+
+    /* ── C. Midnight Neon ── */
+    .c .header  { background: #120818; color: #fff; border-bottom: 1px solid #2a1040; }
+    .c .hero    { background: linear-gradient(135deg, #ff6ec7, #e91e8c); }
+    .c .hero *  { color: #fff; }
+    .c .hero-btn { background: #120818; color: #ff6ec7; box-shadow: 0 0 12px #ff6ec766; }
+    .c .cards   { background: #120818; }
+    .c .card    { background: #1e1028; border: 1px solid rgba(255,110,199,0.25); }
+    .c .card-city { color: #fff; }
+    .c .card-sub  { color: #9e6a7e; }
+    .c .bar-track { background: #2a1040; }
+    .c .bar-fill  { background: #ff6ec7; box-shadow: 0 0 6px #ff6ec7aa; }
+    .c .badge   { background: rgba(255,110,199,0.2); color: #ff6ec7; }
+    .c .banner  { background: linear-gradient(to right, #1e1028, #2a1040); border: 1px solid rgba(255,110,199,0.3); }
+    .c .banner * { color: #fff; }
+    .c .banner-title { color: #ff6ec7; }
+
+    /* ── D. Deep Rose Mono ── */
+    .d .header  { background: #1f0a14; color: #fce8f2; border-bottom: 1px solid #3d1528; }
+    .d .hero    { background: linear-gradient(to right, #c05888, #d4749c, #e898bc, #f0b0cc); }
+    .d .hero *  { color: #fff; }
+    .d .hero-btn { background: #1f0a14; color: #f0b0cc; }
+    .d .cards   { background: #1f0a14; }
+    .d .card    { background: #2e1020; border: 1px solid #522836; }
+    .d .card-city { color: #fce8f2; }
+    .d .card-sub  { color: #9e6a7e; }
+    .d .bar-track { background: #3d1528; }
+    .d .bar-fill  { background: #e898bc; }
+    .d .badge   { background: #3d1528; color: #e898bc; }
+    .d .banner  { background: linear-gradient(to right, #2e1020, #522836); border: 1px solid #7a3050; }
+    .d .banner * { color: #fce8f2; }
+  </style>
+</head>
+<body>
+
+  <!-- A. Dark Sakura -->
+  <div class="panel a">
+    <div class="panel-label">A — Dark Sakura</div>
+    <div class="header">
+      <span>벚꽃 언제 필까?</span>
+      <span>지역별 · AI 도우미</span>
+    </div>
+    <div class="hero">
+      <div class="hero-label">2026 전국 벚꽃 개화 예보</div>
+      <div class="hero-title">벚꽃 언제 필까?</div>
+      <div class="hero-sub">전국 개화 예보 · 낙화 위험도 · AI 여행 추천</div>
+      <div class="hero-btn">지역별 개화 보기</div>
+    </div>
+    <div class="banner">
+      <div>
+        <div class="banner-text">AI 도우미</div>
+        <div class="banner-title" style="color:#ff4da6">어디로 가면 좋을까요?</div>
+      </div>
+      <span style="font-size:24px; color:#ff4da6">🤖</span>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-city">서울</div><div class="card-sub">경기도</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="badge">만개</div></div>
+      <div class="card"><div class="card-city">부산</div><div class="card-sub">경상남도</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="badge">낙화중</div></div>
+      <div class="card"><div class="card-city">제주</div><div class="card-sub">제주도</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="badge">만개</div></div>
+    </div>
+  </div>
+
+  <!-- B. Cream & Burgundy -->
+  <div class="panel b">
+    <div class="panel-label">B — Cream &amp; Burgundy</div>
+    <div class="header">
+      <span>벚꽃 언제 필까?</span>
+      <span>지역별 · AI 도우미</span>
+    </div>
+    <div class="hero">
+      <div class="hero-label">2026 전국 벚꽃 개화 예보</div>
+      <div class="hero-title">벚꽃 언제 필까?</div>
+      <div class="hero-sub">전국 개화 예보 · 낙화 위험도 · AI 여행 추천</div>
+      <div class="hero-btn">지역별 개화 보기</div>
+    </div>
+    <div class="banner">
+      <div>
+        <div class="banner-text">AI 도우미</div>
+        <div class="banner-title">어디로 가면 좋을까요?</div>
+      </div>
+      <span style="font-size:24px; opacity:0.4">🤖</span>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-city">서울</div><div class="card-sub">경기도</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="badge">만개</div></div>
+      <div class="card"><div class="card-city">부산</div><div class="card-sub">경상남도</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="badge">낙화중</div></div>
+      <div class="card"><div class="card-city">제주</div><div class="card-sub">제주도</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="badge">만개</div></div>
+    </div>
+  </div>
+
+  <!-- C. Midnight Neon -->
+  <div class="panel c">
+    <div class="panel-label">C — Midnight Neon</div>
+    <div class="header">
+      <span>벚꽃 언제 필까?</span>
+      <span>지역별 · AI 도우미</span>
+    </div>
+    <div class="hero">
+      <div class="hero-label">2026 전국 벚꽃 개화 예보</div>
+      <div class="hero-title">벚꽃 언제 필까?</div>
+      <div class="hero-sub">전국 개화 예보 · 낙화 위험도 · AI 여행 추천</div>
+      <div class="hero-btn">지역별 개화 보기</div>
+    </div>
+    <div class="banner">
+      <div>
+        <div class="banner-text">AI 도우미</div>
+        <div class="banner-title">어디로 가면 좋을까요?</div>
+      </div>
+      <span style="font-size:24px; color:#ff6ec7">🤖</span>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-city">서울</div><div class="card-sub">경기도</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="badge">만개</div></div>
+      <div class="card"><div class="card-city">부산</div><div class="card-sub">경상남도</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="badge">낙화중</div></div>
+      <div class="card"><div class="card-city">제주</div><div class="card-sub">제주도</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="badge">만개</div></div>
+    </div>
+  </div>
+
+  <!-- D. Deep Rose Mono -->
+  <div class="panel d">
+    <div class="panel-label">D — Deep Rose Mono</div>
+    <div class="header">
+      <span>벚꽃 언제 필까?</span>
+      <span>지역별 · AI 도우미</span>
+    </div>
+    <div class="hero">
+      <div class="hero-label">2026 전국 벚꽃 개화 예보</div>
+      <div class="hero-title">벚꽃 언제 필까?</div>
+      <div class="hero-sub">전국 개화 예보 · 낙화 위험도 · AI 여행 추천</div>
+      <div class="hero-btn">지역별 개화 보기</div>
+    </div>
+    <div class="banner">
+      <div>
+        <div class="banner-text">AI 도우미</div>
+        <div class="banner-title">어디로 가면 좋을까요?</div>
+      </div>
+      <span style="font-size:24px; opacity:0.4">🤖</span>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-city">서울</div><div class="card-sub">경기도</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="badge">만개</div></div>
+      <div class="card"><div class="card-city">부산</div><div class="card-sub">경상남도</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="badge">낙화중</div></div>
+      <div class="card"><div class="card-city">제주</div><div class="card-sub">제주도</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="badge">만개</div></div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -97,10 +97,10 @@ export const RISK_LABEL: Record<PetalFallRisk["level"], string> = {
   extreme: "매우 높음",
 };
 
-/** 위험도 색상 클래스 */
+/** 위험도 색상 클래스 — CSS 변수로 라이트/다크 자동 전환 */
 export const RISK_COLOR: Record<PetalFallRisk["level"], string> = {
-  low: "text-green-400 bg-[#0a2010]",
-  medium: "text-orange-400 bg-[#2d1a10]",
-  high: "text-red-400 bg-[#2d1010]",
-  extreme: "text-purple-400 bg-[#1a1028]",
+  low: "text-risk-low-text bg-risk-low-bg",
+  medium: "text-risk-medium-text bg-risk-medium-bg",
+  high: "text-risk-high-text bg-risk-high-bg",
+  extreme: "text-risk-extreme-text bg-risk-extreme-bg",
 };

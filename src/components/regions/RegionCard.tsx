@@ -26,12 +26,12 @@ export function RegionCard({ region, className }: Props) {
       >
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-[#ffd6e8]">{region.name}</h3>
-            <p className="text-xs text-[#9e6a7e]">{region.province}</p>
+            <h3 className="text-base font-bold text-text-primary">{region.name}</h3>
+            <p className="text-xs text-text-muted">{region.province}</p>
           </div>
           <div className="flex items-center gap-1.5">
             <StatusBadge status={region.status} />
-            <ChevronRight size={14} className="text-[#5a3048]" />
+            <ChevronRight size={14} className="text-text-faint" />
           </div>
         </div>
 
@@ -52,7 +52,7 @@ export function RegionCard({ region, className }: Props) {
         </div>
 
         {region.famousSpots.length > 0 && (
-          <p className="flex items-center gap-1 truncate text-xs text-[#9e6a7e]">
+          <p className="flex items-center gap-1 truncate text-xs text-text-muted">
             <MapPin size={11} className="shrink-0 text-[#ff4da6]" />
             {region.famousSpots[0]}
           </p>

@@ -25,7 +25,7 @@ export function RegionDetailClient({ region }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-      <Link href="/regions" className="inline-flex items-center gap-1 text-sm text-[#9e6a7e] transition-colors hover:text-[#ff4da6]">
+      <Link href="/regions" className="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-[#ff4da6]">
         <ChevronLeft size={16} /> 전국 예보로
       </Link>
 
@@ -33,8 +33,8 @@ export function RegionDetailClient({ region }: Props) {
       <div className="card space-y-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-extrabold text-[#ffd6e8]">{region.name}</h1>
-            <p className="text-sm text-[#9e6a7e]">{region.province}</p>
+            <h1 className="text-2xl font-extrabold text-text-primary">{region.name}</h1>
+            <p className="text-sm text-text-muted">{region.province}</p>
           </div>
           <StatusBadge status={region.status} />
         </div>
@@ -46,8 +46,8 @@ export function RegionDetailClient({ region }: Props) {
             { label: "낙화", date: formatMonthDay(region.fall),  active: region.status === "falling" || region.status === "done" },
           ].map(({ label, date, active }) => (
             <div key={label} className={`rounded-xl px-2 py-3 ${active ? "bg-sakura-800" : "bg-sakura-900"}`}>
-              <p className={`text-xs font-semibold ${active ? "text-[#ff4da6]" : "text-[#5a3048]"}`}>{label}</p>
-              <p className={`mt-0.5 text-sm font-bold ${active ? "text-[#ffd6e8]" : "text-[#7a4558]"}`}>{date}</p>
+              <p className={`text-xs font-semibold ${active ? "text-[#ff4da6]" : "text-text-faint"}`}>{label}</p>
+              <p className={`mt-0.5 text-sm font-bold ${active ? "text-text-primary" : "text-text-dim"}`}>{date}</p>
             </div>
           ))}
         </div>
@@ -59,12 +59,12 @@ export function RegionDetailClient({ region }: Props) {
       {/* 명소 */}
       {region.famousSpots.length > 0 && (
         <div className="card p-5">
-          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-[#ffd6e8]">
+          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-text-primary">
             <MapPin size={16} className="text-[#ff4da6]" /> 추천 명소
           </h2>
           <ul className="space-y-2">
             {region.famousSpots.map((spot) => (
-              <li key={spot} className="flex items-center gap-2 text-sm text-[#c090a8]">
+              <li key={spot} className="flex items-center gap-2 text-sm text-text-secondary">
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff4da6]" />
                 {spot}
               </li>
@@ -75,7 +75,7 @@ export function RegionDetailClient({ region }: Props) {
 
       {/* 날씨 */}
       <div className="card p-5">
-        <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-[#ffd6e8]">
+        <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-text-primary">
           <CloudSun size={16} className="text-[#ff4da6]" /> 현재 날씨 &amp; 예보
         </h2>
         <WeatherWidget weather={weather} isLoading={isLoading} />
@@ -84,7 +84,7 @@ export function RegionDetailClient({ region }: Props) {
       {/* 낙화 위험도 */}
       {(isLoading || weather?.petalFallRisk) && (
         <div className="card p-5">
-          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-[#ffd6e8]">
+          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-text-primary">
             <Leaf size={16} className="text-[#ff4da6]" /> 낙화 위험도
           </h2>
           {isLoading ? (
@@ -100,7 +100,7 @@ export function RegionDetailClient({ region }: Props) {
       {/* 봄 축제 */}
       {festivals.length > 0 && (
         <div className="card p-5">
-          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-[#ffd6e8]">
+          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-text-primary">
             <CalendarDays size={16} className="text-[#ff4da6]" /> 관련 봄 축제
           </h2>
           <div className="space-y-3">
@@ -110,20 +110,20 @@ export function RegionDetailClient({ region }: Props) {
                 <div key={festival.id} className="rounded-xl border border-[rgba(255,77,166,0.2)] p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-sm font-semibold text-[#ffd6e8]">{festival.name}</p>
-                      <p className="mt-0.5 text-xs text-[#9e6a7e]">{formatFestivalDates(festival)} · {festival.location}</p>
+                      <p className="text-sm font-semibold text-text-primary">{festival.name}</p>
+                      <p className="mt-0.5 text-xs text-text-muted">{formatFestivalDates(festival)} · {festival.location}</p>
                     </div>
                     <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold",
                       fStatus === "ongoing"  ? "bg-sakura-700 text-[#ff4da6]" :
-                      fStatus === "upcoming" ? "bg-[#0a1a2d] text-blue-400"  :
-                                               "bg-sakura-800 text-[#7a4558]"
+                      fStatus === "upcoming" ? "bg-status-upcoming-bg text-status-upcoming-text"  :
+                                               "bg-sakura-800 text-text-dim"
                     )}>
                       {fStatus === "ongoing" ? "진행 중" : fStatus === "upcoming" ? "예정" : "종료"}
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {festival.highlights.map((h) => (
-                      <span key={h} className="rounded-full bg-sakura-700 px-2.5 py-0.5 text-xs text-[#ff80c0]">{h}</span>
+                      <span key={h} className="rounded-full bg-sakura-700 px-2.5 py-0.5 text-xs text-accent-light">{h}</span>
                     ))}
                   </div>
                 </div>

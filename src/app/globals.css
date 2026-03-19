@@ -29,12 +29,32 @@
   --color-status-peak: #c2185b;
   --color-status-falling: #ff8a65;
   --color-status-done: #bdbdbd;
-  /* Dark Sakura 배경 토큰 */
+  /* Dark Sakura 배경 토큰 — 라이트 모드에서 html.light가 오버라이드 */
   --color-sakura-950: #0d0812;
   --color-sakura-900: #1a1020;
   --color-sakura-800: #2d1535;
   --color-sakura-700: #3d1545;
   --color-sakura-600: #5a1f60;
+  /* 텍스트 의미론적 토큰 — 라이트 모드에서 html.light가 오버라이드 */
+  --color-text-primary: #ffd6e8;
+  --color-text-secondary: #c090a8;
+  --color-text-muted: #9e6a7e;
+  --color-text-faint: #5a3048;
+  --color-text-dim: #7a4558;
+  --color-accent-light: #ff80c0;
+  /* 위험도 배지 — 다크/라이트 전환 */
+  --color-risk-low-bg: #0a2010;
+  --color-risk-low-text: #4ade80;
+  --color-risk-medium-bg: #2d1a10;
+  --color-risk-medium-text: #fb923c;
+  --color-risk-high-bg: #2d1010;
+  --color-risk-high-text: #f87171;
+  --color-risk-extreme-bg: #1a1028;
+  --color-risk-extreme-text: #c084fc;
+  /* 기타 상태 배경 */
+  --color-status-falling-bg: #3d2020;
+  --color-status-upcoming-bg: #0a1a2d;
+  --color-status-upcoming-text: #60a5fa;
   --font-sans:
     "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
     system-ui, sans-serif;
@@ -47,6 +67,42 @@
   --card-border: rgba(255, 77, 166, 0.2);
   --muted: #2d1535;
   --muted-foreground: #9e6a7e;
+}
+
+/* 라이트 모드 — next-themes가 html에 .light 클래스 추가 */
+html.light {
+  --background: #fff0f8;
+  --foreground: #1a0814;
+  --card: #ffffff;
+  --card-border: rgba(255, 77, 166, 0.25);
+  --muted: #fce4ec;
+  --muted-foreground: #6b3050;
+  /* 배경 토큰 역전 */
+  --color-sakura-950: #fff0f8;
+  --color-sakura-900: #ffffff;
+  --color-sakura-800: #fce4ec;
+  --color-sakura-700: #f9d0e4;
+  --color-sakura-600: #f48fb1;
+  /* 텍스트 토큰 역전 */
+  --color-text-primary: #1a0814;
+  --color-text-secondary: #4a2030;
+  --color-text-muted: #6b3050;
+  --color-text-faint: #c0a0b0;
+  --color-text-dim: #a08090;
+  --color-accent-light: #c2185b;
+  /* 위험도 배지 — 라이트 모드 */
+  --color-risk-low-bg: #f0fdf4;
+  --color-risk-low-text: #15803d;
+  --color-risk-medium-bg: #fff7ed;
+  --color-risk-medium-text: #c2410c;
+  --color-risk-high-bg: #fff1f2;
+  --color-risk-high-text: #b91c1c;
+  --color-risk-extreme-bg: #fdf4ff;
+  --color-risk-extreme-text: #7e22ce;
+  /* 기타 상태 배경 — 라이트 모드 */
+  --color-status-falling-bg: #fff3e0;
+  --color-status-upcoming-bg: #e3f2fd;
+  --color-status-upcoming-text: #1565c0;
 }
 
 * {
@@ -86,9 +142,9 @@ body {
 .skeleton {
   background: linear-gradient(
     90deg,
-    #2d1535 25%,
-    #3d1545 50%,
-    #2d1535 75%
+    var(--color-sakura-800) 25%,
+    var(--color-sakura-700) 50%,
+    var(--color-sakura-800) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -126,5 +182,5 @@ body {
 }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #1a1020; }
-::-webkit-scrollbar-thumb { background: #3d1545; border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--color-sakura-900); }
+::-webkit-scrollbar-thumb { background: var(--color-sakura-700); border-radius: 3px; }

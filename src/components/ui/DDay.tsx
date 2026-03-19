@@ -17,15 +17,15 @@ export function DDay({ status, daysUntilBloom, daysUntilPeak, daysUntilFall, cla
 
   switch (status) {
     case "before":
-      label = "개화"; days = daysUntilBloom; colorClass = "text-[#9e6a7e]"; break;
+      label = "개화"; days = daysUntilBloom; colorClass = "text-text-muted"; break;
     case "blooming":
-      label = "만개"; days = daysUntilPeak;  colorClass = "text-[#ff80c0]"; break;
+      label = "만개"; days = daysUntilPeak;  colorClass = "text-accent-light"; break;
     case "peak":
       label = "낙화"; days = daysUntilFall;  colorClass = "text-[#ff4da6]"; break;
     case "falling":
       label = "종료"; days = daysUntilFall;  colorClass = "text-orange-400"; break;
     case "done":
-      return <span className={cn("text-xs text-[#7a4558]", className)}>시즌 종료</span>;
+      return <span className={cn("text-xs text-text-dim", className)}>시즌 종료</span>;
   }
 
   return (

@@ -40,10 +40,10 @@ export function BloomTimeline({ region, className }: Props) {
       <div className="flex justify-between text-xs">
         {steps.map((s, i) => (
           <div key={s.key} className={cn("flex flex-col items-center gap-0.5", i === 2 && "items-end")}>
-            <span className={cn("font-semibold", i <= activeIdx ? "text-[#ff4da6]" : "text-[#5a3048]")}>
+            <span className={cn("font-semibold", i <= activeIdx ? "text-[#ff4da6]" : "text-text-faint")}>
               {s.label}
             </span>
-            <span className="text-[#7a4558]">{s.date}</span>
+            <span className="text-text-dim">{s.date}</span>
           </div>
         ))}
       </div>

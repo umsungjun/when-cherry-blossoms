@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { DevTools } from "@/components/dev/DevTools";
 
 import "./globals.css";
@@ -46,12 +47,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className="h-full scroll-smooth">
+    <html lang="ko" className="h-full scroll-smooth" suppressHydrationWarning>
       <body className="flex min-h-full flex-col antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        {process.env.NODE_ENV === "development" && <DevTools />}
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          {process.env.NODE_ENV === "development" && <DevTools />}
+        </ThemeProvider>
       </body>
     </html>
   );
