@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { GEMMA_MODEL, buildSystemPrompt, genAI } from "@/lib/api/gemini";
+import { CHAT_MODEL, buildSystemPrompt, genAI } from "@/lib/api/gemini";
 import { REGIONS } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { ChatHistory } from "@/types/chat";
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     ];
 
     const response = await genAI.models.generateContent({
-      model: GEMMA_MODEL,
+      model: CHAT_MODEL,
       contents,
       config: {
         maxOutputTokens: 512,

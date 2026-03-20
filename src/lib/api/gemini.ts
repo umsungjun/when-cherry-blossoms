@@ -2,7 +2,6 @@ import { GoogleGenAI } from "@google/genai";
 
 import { RegionWithStatus } from "@/types/region";
 
-import { BLOOM_STATUS_LABEL } from "../utils/bloom";
 
 export const genAI = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -47,6 +46,8 @@ export function buildSystemPrompt(regions: RegionWithStatus[]): string {
 - 벚꽃 관련 질문이 아니면 "저는 벚꽃 여행 전문이에요 🌸" 라고 답하세요`;
 }
 
-// gemini-2.0-flash: Gemma 3 27B 대비 한국어·추론 품질이 월등히 높고 무료 티어 지원
-// Gemma를 원하는 경우 "gemma-3-27b-it" 로 교체 가능
-export const GEMMA_MODEL = "gemini-2.0-flash";
+// 계산·AI 예측용 — 무료 티어 일 20회, 내부 로직에서 사용
+export const PREDICTION_MODEL = "gemini-2.5-flash";
+
+// 유저 문답(AI 버꼬)용 — Gemma 3 27B, 대화 품질 최적화
+export const CHAT_MODEL = "gemma-3-27b-it";
