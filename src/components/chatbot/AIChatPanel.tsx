@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 import { Bot, Flower2, Send, Trash2 } from "lucide-react";
@@ -23,17 +23,21 @@ export function AIChatPanel() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isLoading]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const submit = () => {
     if (!input.trim() || isLoading) return;
     sendMessage(input.trim());
     setInput("");
   };
 
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    submit();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !isComposing) {
       e.preventDefault();
-      handleSubmit(e as unknown as FormEvent);
+      submit();
     }
   };
 
@@ -43,7 +47,7 @@ export function AIChatPanel() {
       <div className="flex items-center justify-between border-b border-[rgba(255,77,166,0.2)] px-4 py-3">
         <div className="flex items-center gap-2">
           <Bot size={18} className="text-[#ff4da6]" />
-          <span className="text-sm font-semibold text-text-primary">벚꽃 AI 도우미</span>
+          <span className="text-sm font-semibold text-text-primary">AI 버꼬</span>
           <span className="rounded-full bg-sakura-800 px-2 py-0.5 text-xs text-accent-light">Gemini 2.0 Flash</span>
         </div>
         {messages.length > 0 && (

@@ -48,10 +48,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="h-full scroll-smooth" suppressHydrationWarning>
-      <body className="flex min-h-full flex-col antialiased">
+      <body className="flex h-screen flex-col antialiased">
         <ThemeProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex flex-1 min-h-0 flex-col overflow-y-auto">{children}</main>
           <Footer />
           {process.env.NODE_ENV === "development" && <DevTools />}
         </ThemeProvider>

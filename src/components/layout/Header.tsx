@@ -42,7 +42,7 @@ export function Header() {
             className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:bg-sakura-800 hover:text-[#ff4da6]"
           >
             <MessageCircle size={15} />
-            <span className="hidden sm:block">AI 도우미</span>
+            <span className="hidden sm:block">AI 버꼬</span>
           </Link>
 
           <ThemeToggle />

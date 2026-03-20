@@ -82,7 +82,7 @@ export default function HomePage() {
               <div className="p-5" style={{ background: "linear-gradient(135deg, #ff4da6 0%, #c2185b 100%)" }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="mb-1 text-xs font-medium text-white/75">AI 도우미</p>
+                    <p className="mb-1 text-xs font-medium text-white/75">AI 버꼬</p>
                     <h3 className="text-lg font-bold text-white">어디로 가면 좋을까요?</h3>
                     <p className="mt-1 text-sm text-white/80">Gemini 2.0 Flash가 지금 개화 상황으로 추천해드려요</p>
                   </div>
