@@ -26,8 +26,10 @@ export function RegionCard({ region, className }: Props) {
       >
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-text-primary">{region.name}</h3>
-            <p className="text-xs text-text-muted">{region.province}</p>
+            <h3 className="text-text-primary text-base font-bold">
+              {region.name}
+            </h3>
+            <p className="text-text-muted text-xs">{region.province}</p>
           </div>
           <div className="flex items-center gap-1.5">
             <StatusBadge status={region.status} />
@@ -45,14 +47,19 @@ export function RegionCard({ region, className }: Props) {
             daysUntilFall={region.daysUntilFall}
           />
           {region.petalFallRisk && (
-            <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", RISK_COLOR[region.petalFallRisk.level])}>
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-xs font-medium",
+                RISK_COLOR[region.petalFallRisk.level]
+              )}
+            >
               낙화 {RISK_LABEL[region.petalFallRisk.level]}
             </span>
           )}
         </div>
 
         {region.famousSpots.length > 0 && (
-          <p className="flex items-center gap-1 truncate text-xs text-text-muted">
+          <p className="text-text-muted flex items-center gap-1 truncate text-xs">
             <MapPin size={11} className="shrink-0 text-[#ff4da6]" />
             {region.famousSpots[0]}
           </p>
