@@ -127,7 +127,9 @@ ${compact}
     writeFileCache(map);
     return map;
   } catch (e) {
-    console.error("AI prediction error:", e);
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error(`AI prediction error: ${msg}`);
+    console.error("GEMINI_API_KEY set:", !!process.env.GEMINI_API_KEY);
     return memCache?.data ?? {};
   }
 }

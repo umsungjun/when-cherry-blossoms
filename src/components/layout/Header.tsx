@@ -1,12 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
 import { MapPin, MessageCircle, Moon, Sun } from "lucide-react";
 
 function ThemeToggle() {
+  const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
+
+  // 서버/클라이언트 hydration 불일치 방지 — 마운트 후에만 아이콘 렌더
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <div className="h-8 w-8 rounded-lg" />;
+  }
+
   return (
     <button
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
