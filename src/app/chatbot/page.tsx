@@ -22,7 +22,7 @@ export default function ChatbotPage() {
           Gemini 2.0 Flash · 현재 개화 현황 반영
         </p>
       </div>
-      <div className="card min-h-0 flex-1 overflow-hidden">
+      <div className="card flex min-h-0 flex-1 flex-col overflow-hidden">
         <AIChatPanel />
       </div>
     </div>

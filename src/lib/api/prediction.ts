@@ -91,9 +91,11 @@ ${compact}
       model: PREDICTION_MODEL,
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
-        maxOutputTokens: 4096,
-        temperature: 0.4,
+        maxOutputTokens: 16384,
+        temperature: 0.3,
         responseMimeType: "application/json",
+        // Gemini 2.5 Flash는 thinking 모델 — 사고 토큰을 최소화해야 JSON이 잘리지 않음
+        thinkingConfig: { thinkingBudget: 256 },
       },
     });
 

@@ -59,7 +59,7 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="flex h-screen flex-col">
             <Header />
-            <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+            <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</main>
             <Footer />
           </div>
           {process.env.NODE_ENV === "development" && <DevTools />}
