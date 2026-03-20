@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
+import { DevTools } from "@/components/dev/DevTools";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { DevTools } from "@/components/dev/DevTools";
 
 import "./globals.css";
 
@@ -48,11 +48,20 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="h-full scroll-smooth" suppressHydrationWarning>
-      <body className="flex h-screen flex-col antialiased">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "vyhmrnv3ug");`,
+          }}
+        />
+      </head>
+      <body className="antialiased">
         <ThemeProvider>
-          <Header />
-          <main className="flex flex-1 min-h-0 flex-col overflow-y-auto">{children}</main>
-          <Footer />
+          <div className="flex h-screen flex-col">
+            <Header />
+            <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+            <Footer />
+          </div>
           {process.env.NODE_ENV === "development" && <DevTools />}
         </ThemeProvider>
       </body>
