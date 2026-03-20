@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         role: "model",
         parts: [
           {
-            text: "네, 벚꽃 여행 도우미로서 정확하게 답변드리겠습니다. 무엇이 궁금하신가요? 🌸",
+            text: "네, 벚꽃에 관해 뭐든 알려드릴게요! 무엇이 궁금하신가요? 🌸",
           },
         ],
       },

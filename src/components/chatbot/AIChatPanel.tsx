@@ -9,10 +9,14 @@ import { useAIChat } from "@/lib/hooks/useAIChat";
 import { cn } from "@/lib/utils/cn";
 
 const QUICK_PROMPTS = [
-  "지금 당장 갈 수 있는 가장 좋은 곳은?",
-  "서울 벚꽃은 언제 피나요?",
-  "만개 시기를 놓쳤어요, 아직 볼 수 있는 곳은?",
-  "이번 주말 비 예보, 어디가 좋을까요?",
+  "서울 벚꽃 언제 펴?",
+  "제주도 벚꽃 지금 볼 수 있어?",
+  "이번 주말 벚꽃 보러 어디 가면 돼?",
+  "벚꽃 만개 시기 놓쳤는데 아직 볼 데 있어?",
+  "진해 군항제 벚꽃 언제가 제일 예뻐?",
+  "비 오면 벚꽃 금방 져?",
+  "벚꽃 야경 볼 만한 곳 추천해줘",
+  "부산이랑 서울 중에 어디가 먼저 펴?",
 ];
 
 export function AIChatPanel() {
@@ -74,7 +78,7 @@ export function AIChatPanel() {
           <div className="space-y-3 py-4">
             <p className="text-text-muted flex items-center justify-center gap-1.5 text-center text-sm">
               <Flower2 size={14} className="text-[#ff4da6]" />
-              벚꽃 여행에 대해 무엇이든 물어보세요!
+              벚꽃에 대해 무엇이든 물어보세요!
             </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {QUICK_PROMPTS.map((p) => (

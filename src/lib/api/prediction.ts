@@ -4,6 +4,7 @@ import path from "path";
 import { RegionWithStatus } from "@/types/region";
 
 import { PREDICTION_MODEL, genAI } from "./gemini";
+import { analyzeAllRegions, RegionWeatherAnalysis } from "./historical-weather";
 
 export interface RegionPrediction {
   regionId: string;
@@ -48,8 +49,71 @@ function writeFileCache(data: Record<string, RegionPrediction>) {
 }
 
 /**
- * Gemini 2.5 Flash로 전국 벚꽃 개화·만개·낙화 날짜 AI 예측
- * 무료 티어 일 20회 → 3시간 캐시로 일 최대 8회 호출
+ * 적산온도(GDD) + 기상 예보 기반 프롬프트 생성
+ * 과거 데이터를 활용해 Gemini가 실질적인 분석 예측을 수행하도록 함
+ */
+function buildPredictionPrompt(
+  regions: RegionWithStatus[],
+  weatherData: RegionWeatherAnalysis[]
+): string {
+  const today = new Date();
+  const mm = today.getMonth() + 1;
+  const dd = today.getDate();
+  const year = today.getFullYear();
+
+  // 지역별 기상 분석 데이터를 정리
+  const weatherMap = new Map(weatherData.map((w) => [w.regionId, w]));
+
+  const regionLines = regions
+    .map((r) => {
+      const w = weatherMap.get(r.id);
+      if (!w) return null;
+      return [
+        `${r.id}|${r.name}|위도${r.lat}`,
+        `기상청:개화${r.bloom.month}/${r.bloom.day},만개${r.peak.month}/${r.peak.day},낙화${r.fall.month}/${r.fall.day}`,
+        `GDD:${w.gddTotal}°C·일|최근7일평균:${w.recentAvgTemp}°C(최고${w.recentAvgTempMax}/최저${w.recentAvgTempMin})`,
+        `3월평균:${w.marchAvgTemp}°C|예보7일평균:${w.forecastAvgTemp}°C(+GDD${w.forecastGddAdd})`,
+        `기상청개화까지:${w.daysUntilKmaBloom}일`,
+      ].join("|");
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  return `당신은 벚꽃 개화 예측 전문 기상 AI입니다. ${year}년 ${mm}월 ${dd}일 기준으로 실제 기상 데이터를 분석하여 정확한 예측을 수행하세요.
+
+## 벚꽃 개화 과학적 기준
+- 왕벚나무 개화 적산온도(GDD, 기준5°C) 임계값: 위도 33~34°는 약 320~370°C·일, 위도 35~36°는 약 370~420°C·일, 위도 37~38°는 약 400~450°C·일
+- 개화→만개: 평균 4~6일 (기온 높으면 3~4일, 낮으면 6~7일)
+- 만개→낙화 시작: 평균 5~7일 (비·바람 시 단축)
+- 최근 기온이 15°C 이상 유지되면 개화가 촉진됨
+- 급격한 기온 하강(꽃샘추위)이 있으면 개화가 1~3일 지연됨
+
+## 과거 서울 개화일 참조 (적산온도와의 상관)
+- 2024: 4/3 개화 (3월 평균 7.8°C, 온난)
+- 2023: 3/24 개화 (3월 평균 10.2°C, 역대급 이른 봄)
+- 2022: 4/1 개화 (3월 평균 8.5°C)
+- 2021: 3/24 개화 (3월 평균 9.8°C)
+- 2020: 3/27 개화 (3월 평균 8.9°C)
+서울 기준 3월 평균 8~9°C → 4/1~4/5, 10°C 이상 → 3월 말 개화 경향
+
+## 올해 실측 기상 데이터 (Open-Meteo)
+${regionLines}
+
+## 분석 지침
+1. 각 지역의 현재 GDD를 임계값과 비교하여 개화까지 남은 열량 산출
+2. 향후 7일 예보 기온으로 GDD 증가 속도를 추정
+3. 최근 7일 기온 추세(상승/하강)를 반영
+4. 위도별 임계값 차이를 고려 (남쪽일수록 낮은 GDD에서 개화)
+5. 기상청 예보와 독립적으로 예측하되, 근거가 있는 차이만 반영
+
+## 출력 형식
+JSON 배열만 출력. 16개 전부 반환.
+[{"regionId":"seoul","bloom":"4/3","peak":"4/8","fall":"4/13"},...]`;
+}
+
+/**
+ * Gemini 2.5 Flash + 적산온도 기반 벚꽃 개화 예측
+ * 실제 기상 데이터를 분석하여 과학적 근거가 있는 예측 수행
  */
 export async function getAIPredictions(
   regions: RegionWithStatus[]
@@ -67,26 +131,17 @@ export async function getAIPredictions(
     return fileCache.data;
   }
 
-  // 3순위: Gemini API 호출
-  const today = new Date();
-  const mm = today.getMonth() + 1;
-  const dd = today.getDate();
-
-  const compact = regions
-    .map(
-      (r) =>
-        `${r.id}|${r.name}|${r.lat}|${r.bloom.month}/${r.bloom.day}|${r.peak.month}/${r.peak.day}|${r.fall.month}/${r.fall.day}`
-    )
-    .join("\n");
-
-  const prompt = `오늘:${mm}/${dd}. 2026 벚꽃 기상청 데이터(id|이름|위도|개화|만개|낙화):
-${compact}
-
-위도·기후 트렌드 고려해서 AI 예측 날짜를 JSON 배열로 반환.
-형식: [{"regionId":"seoul","bloom":"4/3","peak":"4/8","fall":"4/13"},...]
-기상청과 1~3일 차이가 자연스러움. 16개 전부 반환.`;
-
+  // 3순위: 기상 데이터 수집 + Gemini API 호출
   try {
+    // Open-Meteo에서 올해 실측 기온 + 예보 수집
+    console.log("Fetching historical weather data for AI prediction...");
+    const weatherData = await analyzeAllRegions(regions);
+    console.log(
+      `Weather analysis complete: ${weatherData.length} regions, avg GDD: ${Math.round(weatherData.reduce((s, w) => s + w.gddTotal, 0) / weatherData.length)}°C·일`
+    );
+
+    const prompt = buildPredictionPrompt(regions, weatherData);
+
     const response = await genAI.models.generateContent({
       model: PREDICTION_MODEL,
       contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -94,8 +149,8 @@ ${compact}
         maxOutputTokens: 16384,
         temperature: 0.3,
         responseMimeType: "application/json",
-        // Gemini 2.5 Flash는 thinking 모델 — 사고 토큰을 최소화해야 JSON이 잘리지 않음
-        thinkingConfig: { thinkingBudget: 256 },
+        // 사고 토큰을 적절히 할당 — 기상 분석에 더 많은 추론 필요
+        thinkingConfig: { thinkingBudget: 1024 },
       },
     });
 
@@ -116,7 +171,7 @@ ${compact}
     }
 
     console.log(
-      `AI predictions: ${predictions.length}/${regions.length} regions (fetched)`
+      `AI predictions: ${predictions.length}/${regions.length} regions (GDD-based)`
     );
 
     const map: Record<string, RegionPrediction> = {};
