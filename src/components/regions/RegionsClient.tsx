@@ -89,7 +89,7 @@ export function RegionsClient({ predictions }: Props) {
   }, [regions]);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-6 py-10">
+    <div className="mx-auto w-full max-w-5xl space-y-6 px-6 py-10">
       <div>
         <h1 className="text-text-primary flex items-center gap-2 text-2xl font-extrabold">
           <Map size={22} className="text-[#ff4da6]" />
@@ -132,12 +132,12 @@ export function RegionsClient({ predictions }: Props) {
           해당 상태의 지역이 없어요
         </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((r) => {
             const pred = predictions[r.id];
             return (
               <Link key={r.id} href={`/regions/${r.id}`}>
-                <div className="card card-hover cursor-pointer space-y-3 p-4 transition-all">
+                <div className="card card-hover cursor-pointer space-y-3 p-5 transition-all">
                   {/* 헤더: 도시명 + 상태 배지 */}
                   <div className="flex items-start justify-between gap-2">
                     <div>

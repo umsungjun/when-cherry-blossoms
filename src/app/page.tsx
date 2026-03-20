@@ -67,7 +67,7 @@ export default async function HomePage() {
     <>
       <HeroSection />
 
-      <div className="mx-auto max-w-5xl space-y-10 px-6 py-10">
+      <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
         {/* 전국 현황 */}
         <section>
           <h2 className="text-text-primary mb-4 flex items-center gap-2 text-lg font-bold">
@@ -106,12 +106,12 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {regions.map((r) => {
               const pred = predictions[r.id];
               return (
                 <Link key={r.id} href={`/regions/${r.id}`}>
-                  <div className="card card-hover cursor-pointer p-4 transition-all">
+                  <div className="card card-hover cursor-pointer p-5 transition-all">
                     {/* 헤더 */}
                     <div className="mb-3 flex items-center justify-between">
                       <div className="flex items-center gap-2">

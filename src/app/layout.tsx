@@ -57,9 +57,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <div className="flex h-screen flex-col">
+          <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</main>
+            <main className="flex flex-1 flex-col">{children}</main>
             <Footer />
           </div>
           {process.env.NODE_ENV === "development" && <DevTools />}
