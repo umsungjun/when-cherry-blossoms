@@ -31,7 +31,7 @@ export default function RegionsPage() {
   }, [regions]);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-4 py-10">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
       <div>
         <h1 className="flex items-center gap-2 text-2xl font-extrabold text-text-primary">
           <Map size={22} className="text-[#ff4da6]" />

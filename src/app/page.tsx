@@ -41,7 +41,7 @@ export default function HomePage() {
     <>
       <HeroSection />
 
-      <div className="mx-auto max-w-5xl space-y-10 px-4 py-10">
+      <div className="mx-auto max-w-7xl space-y-10 px-4 py-10">
         {/* 전국 현황 */}
         <section>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-text-primary">

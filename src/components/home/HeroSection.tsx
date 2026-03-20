@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 export function HeroSection() {
   return (
     <section
-      className="relative overflow-hidden py-24 text-center"
+      className="relative flex min-h-80 items-center justify-center overflow-hidden text-center"
       style={{ background: "linear-gradient(135deg, #ff4da6 0%, #c2185b 100%)" }}
     >
       {/* 촘촘한 스케치 낙서 패턴 */}
