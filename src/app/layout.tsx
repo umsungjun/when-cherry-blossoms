@@ -13,8 +13,8 @@ export const metadata: Metadata = {
       "https://when-cherry-blossoms.vercel.app"
   ),
   title: {
-    default: "언제 필까? | 2026 벚꽃 개화 예보",
-    template: "%s | 언제 필까?",
+    default: "벚꽃 언제 필까?",
+    template: "%s | 벚꽃 언제 필까?",
   },
   description:
     "2026년 대한민국 지역별 벚꽃 개화일, 낙화 위험도, 봄 축제 정보를 한눈에 확인하세요. AI 챗봇이 벚꽃 명소와 방문 타이밍을 추천해드려요.",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "봄 축제",
   ],
   openGraph: {
-    title: "언제 필까? | 2026 벚꽃 개화 예보",
+    title: "벚꽃 언제 필까?",
     description: "지역별 벚꽃 개화일 · 낙화 위험도 · 봄 축제 정보",
     locale: "ko_KR",
     type: "website",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "언제 필까? | 2026 벚꽃 개화 예보",
+    title: "벚꽃 언제 필까?",
     images: ["/og-image.png"],
   },
   icons: { icon: "/favicon.png" },

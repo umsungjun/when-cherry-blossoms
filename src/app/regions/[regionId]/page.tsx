@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!region) return {};
 
   return {
-    title: `${region.name} 벚꽃 개화 시기 | 벚꽃 언제 필까?`,
+    title: `${region.name} 벚꽃 개화 시기`,
     description: `${region.name} 벚꽃 개화일 ${formatMonthDay(region.bloom)}, 만개일 ${formatMonthDay(region.peak)}. 낙화 위험도와 현장 이야기를 확인하세요.`,
   };
 }

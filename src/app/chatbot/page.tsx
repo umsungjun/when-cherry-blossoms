@@ -5,7 +5,7 @@ import { Bot } from "lucide-react";
 import { AIChatPanel } from "@/components/chatbot/AIChatPanel";
 
 export const metadata: Metadata = {
-  title: "AI 버꼬 | 벚꽃 언제 필까?",
+  title: "AI 버꼬",
   description: "Gemini 2.0 Flash AI가 현재 전국 벚꽃 개화 상황을 바탕으로 여행지를 추천해드려요.",
 };
 
