@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { HeroSection } from "@/components/home/HeroSection";
+import { KoreaBloomMap } from "@/components/home/KoreaBloomMap";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getAIPredictions } from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
@@ -83,6 +84,17 @@ export default async function HomePage() {
                 {icon} {BLOOM_STATUS_LABEL[key]} {stats[key]}곳
               </span>
             ))}
+          </div>
+        </section>
+
+        {/* 한반도 지도 */}
+        <section>
+          <h2 className="text-text-primary mb-4 flex items-center gap-2 text-lg font-bold">
+            <MapPin size={18} className="text-[#ff4da6]" />
+            개화 지도
+          </h2>
+          <div className="card flex justify-center p-6">
+            <KoreaBloomMap regions={regions} predictions={predictions} />
           </div>
         </section>
 
