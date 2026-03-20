@@ -1,26 +1,86 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 @AGENTS.md
 
-# AI 모델 사용 정책
+## 빌드 및 개발 명령어
 
-## 모델 구분 (`src/lib/api/gemini.ts`)
+```bash
+pnpm dev          # 개발 서버 (Turbopack)
+pnpm build        # 프로덕션 빌드
+pnpm start        # 프로덕션 서버
+npx prettier --write "src/**/*.{ts,tsx}"  # 전체 포맷팅
+```
 
-| 용도 | 모델 | 상수 |
-|---|---|---|
-| 계산·예측 (내부 로직) | `gemini-2.5-flash` | `PREDICTION_MODEL` |
-| 유저 문답 (AI 버꼬 챗봇) | `gemma-3-27b-it` | `CHAT_MODEL` |
+테스트 프레임워크는 아직 설정되지 않음.
 
-- **PREDICTION_MODEL**: 개화 예측, 추천 로직 등 서버 내부에서 AI를 호출할 때 사용. 무료 티어 일 20회 제한.
-- **CHAT_MODEL**: `/api/chat` 유저 대화 전용. Gemma 3 27B 모델 사용.
-- 새로운 AI 호출을 추가할 때 반드시 위 구분에 따라 올바른 상수를 선택할 것.
-- **PREDICTION_MODEL 호출 주기**: `page.tsx`의 `revalidate = 10800` (3시간). 일 최대 8회 호출로 무료 20회 이내 유지.
+## 아키텍처
 
-# 데이터 소스 로드맵
+Next.js 16 App Router + Tailwind CSS v4 + Firebase Firestore 기반 벚꽃 개화 예보 서비스.
 
-## 현재 (Phase 1)
-- 개화 날짜: `src/lib/data/regions.ts`에 하드코딩 (기상청 예보 기반 수동 입력)
-- AI 예측: Gemini 2.5 Flash가 하드코딩 데이터 기반으로 방문 팁·추천 기간 생성 (`src/lib/api/prediction.ts`)
+### 핵심 데이터 흐름
 
-## 향후 (Phase 2) — 공공 API 연동 시
-- `regions.ts` 하드코딩 → 기상청 공공 API fetch로 교체
-- 메인 카드에 **기상청 예보 vs AI 예측** 두 날짜를 나란히 표시
-- `enrichRegion()` 로직은 그대로 유지 (데이터 소스만 교체)
+```
+REGIONS (src/lib/data/regions.ts, 16개 지역 정적 데이터)
+  ↓ enrichRegion(region, today)
+RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
+  ↓
+페이지 렌더링 (메인, 지역별, 상세)
+```
+
+`Region`(정적 DateInfo)을 `RegionWithStatus`(런타임 상태)로 변환하는 `enrichRegion()`이 데이터 흐름의 핵심. 직접 상태를 계산하지 말고 항상 이 함수를 사용할 것.
+
+### 페이지 구조
+
+- `/` — 서버 컴포넌트. AI 예측 fetch + 기상청 vs AI 비교 카드 그리드
+- `/regions` — 서버에서 predictions fetch → `RegionsClient`(클라이언트)에 prop 전달
+- `/regions/[regionId]` — 상세 페이지 (날씨, 타임라인, 댓글, 추천)
+- `/chatbot` — AI 버꼬 채팅 UI
+
+### API 라우트
+
+- `POST /api/chat` — Gemma 3 27B 유저 대화 (시스템 프롬프트에 현재 개화 현황 주입)
+- `GET /api/weather?lat=X&lng=Y` — Open-Meteo 7일 예보 + 낙화 위험도
+- `GET /api/bloom-status` — 전국 개화 상태
+- `GET /api/recommendation` — 날씨 기반 방문 추천 (scoreRegion 알고리즘)
+
+## AI 모델 사용 정책
+
+| 용도 | 모델 | 상수 | 제한 |
+|---|---|---|---|
+| 계산·예측 (내부 로직) | `gemini-2.5-flash` | `PREDICTION_MODEL` | 무료 20회/일 |
+| 유저 문답 (AI 버꼬) | `gemma-3-27b-it` | `CHAT_MODEL` | 요청별 |
+
+- 새 AI 호출 추가 시 반드시 위 구분에 따라 올바른 상수를 선택할 것.
+- **Prediction 캐싱**: 인메모리 + `.cache/ai-predictions.json` 파일 이중 캐시 (3시간 TTL). dev 서버 재시작 시에도 파일 캐시에서 즉시 로드.
+- **Chat**: Gemma는 `systemInstruction` 미지원 → 첫 메시지로 시스템 프롬프트 주입. history 최대 18개.
+- `revalidate = 10800` (3시간) → 일 최대 8회 API 호출로 무료 티어 내 유지.
+
+## 테마 시스템 (다크/라이트)
+
+`next-themes` (`attribute="class"`, `defaultTheme="light"`)로 전환. `html.light` 클래스가 CSS 변수를 오버라이드.
+
+**컴포넌트에서 색상 사용 규칙:**
+- 텍스트: `text-text-primary`, `text-text-secondary`, `text-text-muted`, `text-text-faint`, `text-text-dim`
+- 배경: `bg-sakura-950` ~ `bg-sakura-600` (라이트 모드에서 자동 역전)
+- 액센트: `text-[#ff4da6]` (핫 핑크, 양쪽 모드 공용)
+- **하드코딩 hex 사용 금지** — 반드시 CSS 변수 기반 Tailwind 클래스 사용
+
+## Tailwind v4 주의사항
+
+- `@theme {}` 블록에서 커스텀 색상 토큰 정의 (globals.css)
+- 그래디언트: `bg-gradient-to-r` ❌ → `bg-linear-to-r` ✅
+- `@theme`의 `--color-*` 변수는 `html.light`에서 런타임 오버라이드 가능
+
+## Firebase 패턴
+
+- **지연 초기화**: `getDb()`, `getFirebaseAuth()` 호출로만 접근 (SSR 안전)
+- **댓글**: `regions/{regionId}/comments` 컬렉션, `onSnapshot()` 실시간 구독
+- 직접 `initializeApp()` 호출 금지.
+
+## 데이터 소스 로드맵
+
+**현재 (Phase 1)**: `regions.ts` 하드코딩 + Gemini 2.5 Flash AI 예측 날짜 생성
+
+**향후 (Phase 2)**: 기상청 공공 API 연동 시 `regions.ts` → API fetch 교체. `enrichRegion()` 로직 유지, 메인 카드에 기상청 vs AI 두 날짜 나란히 표시 (현재 UI 이미 대응).
