@@ -53,5 +53,5 @@ const ANIMALS = [
 export function generateNickname(): string {
   const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
   const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
-  return `${adj}${animal}`;
+  return `${adj} ${animal}`;
 }

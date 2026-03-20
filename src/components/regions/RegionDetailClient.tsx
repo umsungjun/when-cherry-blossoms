@@ -36,7 +36,7 @@ export function RegionDetailClient({ region }: Props) {
   const today = new Date();
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8">
       <Link
         href="/regions"
         className="text-text-muted inline-flex items-center gap-1 text-sm transition-colors hover:text-[#ff4da6]"
