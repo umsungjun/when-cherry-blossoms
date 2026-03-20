@@ -50,8 +50,12 @@ export function calculatePetalFallRisk(input: RiskInput): PetalFallRisk {
         ? "wind"
         : "both";
 
-  const rainPct = score > 0 ? Math.round((rainScore / totalScore) * 100) : 0;
-  const windPct = score > 0 ? Math.round((windTotal / totalScore) * 100) : 0;
+  // synergyBonus를 비/바람 기여도에 비례 배분해서 합이 항상 100%가 되도록 보정
+  const rawSum = rainScore + windTotal;
+  const rainWithSynergy = rawSum > 0 ? rainScore + synergyBonus * (rainScore / rawSum) : 0;
+  const windWithSynergy = rawSum > 0 ? windTotal + synergyBonus * (windTotal / rawSum) : 0;
+  const rainPct = score > 0 ? Math.round((rainWithSynergy / totalScore) * 100) : 0;
+  const windPct = score > 0 ? Math.min(100 - rainPct, Math.round((windWithSynergy / totalScore) * 100)) : 0;
 
   const recommendation =
     level === "low"

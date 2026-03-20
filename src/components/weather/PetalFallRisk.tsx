@@ -77,12 +77,12 @@ export function PetalFallRisk({ risk, compact = false, className }: Props) {
 
       <div className="space-y-1.5 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-text-muted flex w-12 items-center gap-1">
+          <span className="flex w-12 items-center gap-1 text-blue-700">
             <CloudRain size={11} /> 비
           </span>
           <div className="bg-sakura-800 h-1.5 flex-1 rounded-full">
             <div
-              className="h-full rounded-full bg-blue-400 transition-all duration-500"
+              className="h-full rounded-full bg-blue-700 transition-all duration-500"
               style={{ width: `${rainContribution}%` }}
             />
           </div>
@@ -91,12 +91,12 @@ export function PetalFallRisk({ risk, compact = false, className }: Props) {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-text-muted flex w-12 items-center gap-1">
+          <span className="flex w-12 items-center gap-1 text-blue-300">
             <Wind size={11} /> 바람
           </span>
           <div className="bg-sakura-800 h-1.5 flex-1 rounded-full">
             <div
-              className="h-full rounded-full bg-orange-400 transition-all duration-500"
+              className="h-full rounded-full bg-blue-300 transition-all duration-500"
               style={{ width: `${windContribution}%` }}
             />
           </div>
