@@ -76,13 +76,13 @@ export function CommentSection({ regionId }: Props) {
             onChange={(e) => setNicknameInput(e.target.value)}
             maxLength={16}
             placeholder="닉네임"
-            className="bg-sakura-950 text-text-primary placeholder:text-text-faint flex-1 rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm outline-none transition-colors focus:border-[#ff4da6]"
+            className="bg-sakura-950 text-text-primary placeholder:text-text-faint min-w-0 flex-1 rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm outline-none transition-colors focus:border-[#ff4da6]"
           />
           <button
             type="button"
             onClick={handleReroll}
             title="랜덤 닉네임"
-            className="text-text-muted rounded-lg border border-[rgba(255,77,166,0.2)] p-2 transition-colors hover:border-[#ff4da6] hover:text-[#ff4da6]"
+            className="text-text-muted shrink-0 rounded-lg border border-[rgba(255,77,166,0.2)] p-2 transition-colors hover:border-[#ff4da6] hover:text-[#ff4da6]"
           >
             <RefreshCw size={16} />
           </button>
