@@ -3,10 +3,10 @@ import { formatDDay } from "@/lib/utils/date";
 import { BloomStatus } from "@/types/region";
 
 interface Props {
-  status: BloomStatus;
-  daysUntilBloom: number;
-  daysUntilPeak: number;
-  daysUntilFall: number;
+  status: BloomStatus | "unknown";
+  daysUntilBloom: number | null;
+  daysUntilPeak: number | null;
+  daysUntilFall: number | null;
   className?: string;
 }
 
@@ -17,8 +17,16 @@ export function DDay({
   daysUntilFall,
   className,
 }: Props) {
+  if (status === "unknown") {
+    return (
+      <span className={cn("text-text-muted text-xs", className)}>
+        기상청 데이터 대기 중
+      </span>
+    );
+  }
+
   let label = "";
-  let days = 0;
+  let days: number | null = 0;
   let colorClass = "";
 
   switch (status) {
@@ -48,6 +56,14 @@ export function DDay({
           시즌 종료
         </span>
       );
+  }
+
+  if (days === null) {
+    return (
+      <span className={cn("text-text-muted text-xs", className)}>
+        기상청 데이터 대기 중
+      </span>
+    );
   }
 
   return (

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils/cn";
 import { BloomStatus } from "@/types/region";
 
 interface Props {
-  status: BloomStatus;
+  status: BloomStatus | "unknown";
   className?: string;
 }
 

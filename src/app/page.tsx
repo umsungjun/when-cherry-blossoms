@@ -29,12 +29,13 @@ export default async function HomePage() {
   const predictions = await getAIPredictions(regions);
   const hasPredictions = Object.keys(predictions).length > 0;
 
-  const stats: Record<BloomStatus, number> = {
+  const stats: Record<BloomStatus | "unknown", number> = {
     before: 0,
     blooming: 0,
     peak: 0,
     falling: 0,
     done: 0,
+    unknown: 0,
   };
   regions.forEach((r) => stats[r.status]++);
 
@@ -144,13 +145,13 @@ export default async function HomePage() {
                           기상청
                         </span>
                         <span className="text-text-primary font-semibold">
-                          {r.bloom.month}/{r.bloom.day}
+                          {r.bloom ? `${r.bloom.month}/${r.bloom.day}` : "-"}
                         </span>
                         <span className="font-semibold text-[#ff4da6]">
-                          {r.peak.month}/{r.peak.day}
+                          {r.peak ? `${r.peak.month}/${r.peak.day}` : "-"}
                         </span>
                         <span className="text-text-secondary font-semibold">
-                          {r.fall.month}/{r.fall.day}
+                          {r.fall ? `${r.fall.month}/${r.fall.day}` : "-"}
                         </span>
                       </div>
 

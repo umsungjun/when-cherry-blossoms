@@ -19,9 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const region = getRegionById(regionId);
   if (!region) return {};
 
+  const bloomStr = region.bloom ? `개화일 ${formatMonthDay(region.bloom)}, ` : "";
+  const peakStr = region.peak ? `만개일 ${formatMonthDay(region.peak)}. ` : "";
+
   return {
     title: `${region.name} 벚꽃 개화 시기`,
-    description: `${region.name} 벚꽃 개화일 ${formatMonthDay(region.bloom)}, 만개일 ${formatMonthDay(region.peak)}. 낙화 위험도와 현장 이야기를 확인하세요.`,
+    description: `${region.name} 벚꽃 ${bloomStr}${peakStr}낙화 위험도와 현장 이야기를 확인하세요.`,
   };
 }
 

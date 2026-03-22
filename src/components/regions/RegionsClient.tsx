@@ -76,13 +76,14 @@ export function RegionsClient({ predictions }: Props) {
     [regions, activeTab]
   );
   const counts = useMemo(() => {
-    const c: Record<BloomStatus | "all", number> = {
+    const c: Record<BloomStatus | "unknown" | "all", number> = {
       all: regions.length,
       before: 0,
       blooming: 0,
       peak: 0,
       falling: 0,
       done: 0,
+      unknown: 0,
     };
     regions.forEach((r) => c[r.status]++);
     return c;
@@ -176,13 +177,13 @@ export function RegionsClient({ predictions }: Props) {
                         기상청
                       </span>
                       <span className="text-text-primary font-semibold">
-                        {r.bloom.month}/{r.bloom.day}
+                        {r.bloom ? `${r.bloom.month}/${r.bloom.day}` : "-"}
                       </span>
                       <span className="font-semibold text-[#ff4da6]">
-                        {r.peak.month}/{r.peak.day}
+                        {r.peak ? `${r.peak.month}/${r.peak.day}` : "-"}
                       </span>
                       <span className="text-text-secondary font-semibold">
-                        {r.fall.month}/{r.fall.day}
+                        {r.fall ? `${r.fall.month}/${r.fall.day}` : "-"}
                       </span>
                     </div>
                     <div className="bg-sakura-800 grid grid-cols-4 gap-1 rounded-md px-2 py-1.5 text-center">

@@ -61,7 +61,8 @@ export function RegionDetailClient({ region }: Props) {
             {
               label: "개화",
               date: formatMonthDay(region.bloom),
-              active: region.status !== "before",
+              active:
+                region.status !== "before" && region.status !== "unknown",
             },
             {
               label: "만개",

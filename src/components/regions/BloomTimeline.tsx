@@ -10,6 +10,18 @@ interface Props {
 export function BloomTimeline({ region, className }: Props) {
   const { bloomProgress, status } = region;
 
+  // 기상청 데이터 없으면 빈 타임라인
+  if (status === "unknown") {
+    return (
+      <div className={cn("space-y-2", className)}>
+        <div className="bg-sakura-800 relative h-2 rounded-full" />
+        <p className="text-text-muted text-center text-xs">
+          기상청 데이터 대기 중
+        </p>
+      </div>
+    );
+  }
+
   const steps = [
     { key: "bloom", label: "개화", date: formatMonthDay(region.bloom), pct: 0 },
     { key: "peak", label: "만개", date: formatMonthDay(region.peak), pct: 50 },
