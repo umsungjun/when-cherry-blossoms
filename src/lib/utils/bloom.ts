@@ -2,12 +2,22 @@ import { BloomStatus, Region, RegionWithStatus } from "@/types/region";
 
 import { diffDays, getToday, toDate } from "./date";
 
+/** 기상청 날짜 데이터 존재 여부 */
+function hasBloomData(region: Region): boolean {
+  return !!(region.bloom && region.peak && region.fall);
+}
+
 /** 오늘 날짜 기준 개화 상태 계산 */
-export function getBloomStatus(region: Region, today?: Date): BloomStatus {
+export function getBloomStatus(
+  region: Region,
+  today?: Date,
+): BloomStatus | "unknown" {
+  if (!hasBloomData(region)) return "unknown";
+
   const now = today ?? getToday();
-  const bloomDate = toDate(region.bloom);
-  const peakDate = toDate(region.peak);
-  const fallDate = toDate(region.fall);
+  const bloomDate = toDate(region.bloom!);
+  const peakDate = toDate(region.peak!);
+  const fallDate = toDate(region.fall!);
 
   // 낙화 완료 (낙화일 + 5일 후)
   const doneDate = new Date(fallDate);
@@ -22,9 +32,11 @@ export function getBloomStatus(region: Region, today?: Date): BloomStatus {
 
 /** 개화 진행률 0-100 계산 */
 export function getBloomProgress(region: Region, today?: Date): number {
+  if (!hasBloomData(region)) return 0;
+
   const now = today ?? getToday();
-  const bloomDate = toDate(region.bloom);
-  const fallDate = toDate(region.fall);
+  const bloomDate = toDate(region.bloom!);
+  const fallDate = toDate(region.fall!);
 
   if (now < bloomDate) return 0;
 
@@ -40,9 +52,20 @@ export function enrichRegion(region: Region, today?: Date): RegionWithStatus {
   const status = getBloomStatus(region, now);
   const progress = getBloomProgress(region, now);
 
-  const bloomDate = toDate(region.bloom);
-  const peakDate = toDate(region.peak);
-  const fallDate = toDate(region.fall);
+  if (!hasBloomData(region)) {
+    return {
+      ...region,
+      status,
+      bloomProgress: progress,
+      daysUntilBloom: null,
+      daysUntilPeak: null,
+      daysUntilFall: null,
+    };
+  }
+
+  const bloomDate = toDate(region.bloom!);
+  const peakDate = toDate(region.peak!);
+  const fallDate = toDate(region.fall!);
 
   return {
     ...region,
@@ -55,19 +78,21 @@ export function enrichRegion(region: Region, today?: Date): RegionWithStatus {
 }
 
 /** 상태별 한글 레이블 */
-export const BLOOM_STATUS_LABEL: Record<BloomStatus, string> = {
+export const BLOOM_STATUS_LABEL: Record<BloomStatus | "unknown", string> = {
   before: "개화 전",
   blooming: "개화 중",
   peak: "만개",
   falling: "낙화 중",
   done: "종료",
+  unknown: "미정",
 };
 
 /** 상태별 색상 클래스 */
-export const BLOOM_STATUS_COLOR: Record<BloomStatus, string> = {
+export const BLOOM_STATUS_COLOR: Record<BloomStatus | "unknown", string> = {
   before: "text-text-muted bg-sakura-800",
   blooming: "text-accent-light bg-sakura-700",
   peak: "text-[#ff4da6] bg-sakura-700",
   falling: "text-orange-400 bg-status-falling-bg",
   done: "text-text-dim bg-sakura-800",
+  unknown: "text-text-muted bg-sakura-800",
 };

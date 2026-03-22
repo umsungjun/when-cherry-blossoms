@@ -14,6 +14,7 @@ export function buildSystemPrompt(regions: RegionWithStatus[]): string {
     before: [],
     falling: [],
     done: [],
+    unknown: [],
   };
 
   for (const r of regions) {
@@ -36,6 +37,7 @@ export function buildSystemPrompt(regions: RegionWithStatus[]): string {
 - 개화 전 (1주일 이내): ${grouped.before.join(", ") || "없음"}
 - 낙화 중: ${grouped.falling.join(", ") || "없음"}
 - 종료: ${grouped.done.join(", ") || "없음"}
+- 기상청 데이터 미발표: ${grouped.unknown.join(", ") || "없음"}
 
 답변 규칙:
 - 항상 한국어로 답변하세요

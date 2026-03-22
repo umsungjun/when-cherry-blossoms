@@ -19,8 +19,9 @@ export function formatDDay(days: number): string {
   return `D+${Math.abs(days)}`;
 }
 
-/** "4월 10일" 형태 */
-export function formatMonthDay(info: DateInfo): string {
+/** "4월 10일" 형태, 데이터 없으면 "-" */
+export function formatMonthDay(info?: DateInfo): string {
+  if (!info) return "-";
   return `${info.month}월 ${info.day}일`;
 }
 

@@ -68,12 +68,15 @@ function buildPredictionPrompt(
     .map((r) => {
       const w = weatherMap.get(r.id);
       if (!w) return null;
+      const kmaLine = r.bloom && r.peak && r.fall
+        ? `기상청:개화${r.bloom.month}/${r.bloom.day},만개${r.peak.month}/${r.peak.day},낙화${r.fall.month}/${r.fall.day}`
+        : `기상청:미발표`;
       return [
         `${r.id}|${r.name}|위도${r.lat}`,
-        `기상청:개화${r.bloom.month}/${r.bloom.day},만개${r.peak.month}/${r.peak.day},낙화${r.fall.month}/${r.fall.day}`,
+        kmaLine,
         `GDD:${w.gddTotal}°C·일|최근7일평균:${w.recentAvgTemp}°C(최고${w.recentAvgTempMax}/최저${w.recentAvgTempMin})`,
         `3월평균:${w.marchAvgTemp}°C|예보7일평균:${w.forecastAvgTemp}°C(+GDD${w.forecastGddAdd})`,
-        `기상청개화까지:${w.daysUntilKmaBloom}일`,
+        w.daysUntilKmaBloom !== null ? `기상청개화까지:${w.daysUntilKmaBloom}일` : `기상청개화일:미정`,
       ].join("|");
     })
     .filter(Boolean)

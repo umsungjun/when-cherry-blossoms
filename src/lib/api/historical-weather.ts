@@ -32,7 +32,7 @@ export interface RegionWeatherAnalysis {
   /** 향후 7일 예보로 추가될 예상 GDD */
   forecastGddAdd: number;
   /** 기상청 기준 개화일까지 남은 일수 */
-  daysUntilKmaBloom: number;
+  daysUntilKmaBloom: number | null;
 }
 
 /** 과거 기상 데이터에서 GDD와 기온 통계 계산 */
@@ -149,9 +149,10 @@ export async function analyzeRegionWeather(
   const forecastAvgTemp = Math.round((forecast.tempMeans.reduce((a, b) => a + b, 0) / forecast.tempMeans.length) * 10) / 10;
   const forecastGddAdd = Math.round(calcGDD(forecast.tempMeans) * 10) / 10;
 
-  // 기상청 개화일까지 남은 일수
-  const kmaBloom = new Date(year, bloomMonth - 1, bloomDay);
-  const daysUntilKmaBloom = Math.round((kmaBloom.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  // 기상청 개화일까지 남은 일수 (bloom 데이터 없으면 null)
+  const daysUntilKmaBloom = bloomMonth > 0 && bloomDay > 0
+    ? Math.round((new Date(year, bloomMonth - 1, bloomDay).getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
 
   return {
     regionId,
@@ -173,7 +174,7 @@ export async function analyzeRegionWeather(
  * 4개씩 배치 처리하여 API rate limit 방지
  */
 export async function analyzeAllRegions(
-  regions: { id: string; name: string; lat: number; lng: number; bloom: { month: number; day: number } }[]
+  regions: { id: string; name: string; lat: number; lng: number; bloom?: { month: number; day: number } }[]
 ): Promise<RegionWeatherAnalysis[]> {
   const BATCH_SIZE = 4;
   const results: RegionWeatherAnalysis[] = [];
@@ -182,7 +183,7 @@ export async function analyzeAllRegions(
     const batch = regions.slice(i, i + BATCH_SIZE);
     const batchResults = await Promise.all(
       batch.map((r) =>
-        analyzeRegionWeather(r.id, r.name, r.lat, r.lng, r.bloom.month, r.bloom.day)
+        analyzeRegionWeather(r.id, r.name, r.lat, r.lng, r.bloom?.month ?? 0, r.bloom?.day ?? 0)
       )
     );
     results.push(...batchResults);

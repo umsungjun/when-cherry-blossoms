@@ -8,8 +8,9 @@ export async function GET() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // 개화 시즌 지역만 필터 (before/done 제외 + before 중 7일 이내)
+  // 개화 시즌 지역만 필터 (기상청 데이터 없는 지역 제외 + before/done 제외 + before 중 7일 이내)
   const candidates = REGIONS.filter((r) => {
+    if (!r.bloom || !r.fall) return false;
     const bloomDate = new Date(
       today.getFullYear(),
       r.bloom.month - 1,

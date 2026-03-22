@@ -9,9 +9,6 @@ export const REGIONS: Region[] = [
     lat: 37.5665,
     lng: 126.978,
     province: "서울특별시",
-    bloom: { month: 4, day: 5 },
-    peak: { month: 4, day: 10 },
-    fall: { month: 4, day: 15 },
     famousSpots: ["여의도 벚꽃길", "청계천", "남산공원"],
   },
   {
@@ -21,9 +18,6 @@ export const REGIONS: Region[] = [
     lat: 37.2636,
     lng: 127.0286,
     province: "경기도",
-    bloom: { month: 4, day: 6 },
-    peak: { month: 4, day: 10 },
-    fall: { month: 4, day: 16 },
     famousSpots: ["수원 화성 벚꽃길", "광교호수공원"],
   },
   // ── 강원 ──
@@ -34,9 +28,6 @@ export const REGIONS: Region[] = [
     lat: 37.8813,
     lng: 127.7298,
     province: "강원특별자치도",
-    bloom: { month: 4, day: 9 },
-    peak: { month: 4, day: 13 },
-    fall: { month: 4, day: 19 },
     famousSpots: ["의암호 벚꽃길", "소양강 스카이워크"],
   },
   {
@@ -46,9 +37,6 @@ export const REGIONS: Region[] = [
     lat: 37.7519,
     lng: 128.8761,
     province: "강원특별자치도",
-    bloom: { month: 4, day: 7 },
-    peak: { month: 4, day: 11 },
-    fall: { month: 4, day: 17 },
     famousSpots: ["경포 벚꽃길", "강릉 중앙시장"],
   },
   // ── 충청 ──
@@ -59,9 +47,6 @@ export const REGIONS: Region[] = [
     lat: 36.3504,
     lng: 127.3845,
     province: "대전광역시",
-    bloom: { month: 4, day: 4 },
-    peak: { month: 4, day: 8 },
-    fall: { month: 4, day: 14 },
     famousSpots: ["유등천 벚꽃길", "한밭수목원"],
   },
   // ── 전라 ──
@@ -72,9 +57,6 @@ export const REGIONS: Region[] = [
     lat: 35.8242,
     lng: 127.148,
     province: "전라북도",
-    bloom: { month: 4, day: 2 },
-    peak: { month: 4, day: 6 },
-    fall: { month: 4, day: 12 },
     famousSpots: ["덕진공원 벚꽃길", "전주천"],
   },
   {
@@ -84,9 +66,6 @@ export const REGIONS: Region[] = [
     lat: 35.1595,
     lng: 126.8526,
     province: "광주광역시",
-    bloom: { month: 4, day: 1 },
-    peak: { month: 4, day: 5 },
-    fall: { month: 4, day: 11 },
     famousSpots: ["충장로 벚꽃길", "광주천"],
   },
   {
@@ -96,9 +75,6 @@ export const REGIONS: Region[] = [
     lat: 34.9506,
     lng: 127.4875,
     province: "전라남도",
-    bloom: { month: 4, day: 2 },
-    peak: { month: 4, day: 6 },
-    fall: { month: 4, day: 12 },
     famousSpots: ["순천만 국가정원", "팔마경기장 벚꽃길"],
   },
   {
@@ -108,9 +84,6 @@ export const REGIONS: Region[] = [
     lat: 34.7604,
     lng: 127.6622,
     province: "전라남도",
-    bloom: { month: 3, day: 30 },
-    peak: { month: 4, day: 4 },
-    fall: { month: 4, day: 10 },
     famousSpots: ["향일암 벚꽃", "돌산공원"],
   },
   {
@@ -120,9 +93,6 @@ export const REGIONS: Region[] = [
     lat: 34.8118,
     lng: 126.3922,
     province: "전라남도",
-    bloom: { month: 3, day: 28 },
-    peak: { month: 4, day: 2 },
-    fall: { month: 4, day: 8 },
     famousSpots: ["유달산 벚꽃길", "삼학도"],
   },
   // ── 경상 ──
@@ -133,9 +103,6 @@ export const REGIONS: Region[] = [
     lat: 35.8714,
     lng: 128.6014,
     province: "대구광역시",
-    bloom: { month: 4, day: 3 },
-    peak: { month: 4, day: 7 },
-    fall: { month: 4, day: 13 },
     famousSpots: ["앞산공원", "달성공원 벚꽃길"],
   },
   {
@@ -145,9 +112,6 @@ export const REGIONS: Region[] = [
     lat: 36.019,
     lng: 129.3435,
     province: "경상북도",
-    bloom: { month: 4, day: 4 },
-    peak: { month: 4, day: 8 },
-    fall: { month: 4, day: 14 },
     famousSpots: ["형산강 벚꽃길", "영일대해수욕장"],
   },
   {
@@ -157,9 +121,6 @@ export const REGIONS: Region[] = [
     lat: 35.5384,
     lng: 129.3114,
     province: "울산광역시",
-    bloom: { month: 4, day: 3 },
-    peak: { month: 4, day: 8 },
-    fall: { month: 4, day: 14 },
     famousSpots: ["태화강 국가정원", "십리대숲 벚꽃길"],
   },
   {
@@ -169,9 +130,6 @@ export const REGIONS: Region[] = [
     lat: 35.1796,
     lng: 129.0756,
     province: "부산광역시",
-    bloom: { month: 3, day: 30 },
-    peak: { month: 4, day: 4 },
-    fall: { month: 4, day: 10 },
     famousSpots: ["온천천 벚꽃길", "황령산 벚꽃길"],
   },
   {
@@ -181,9 +139,6 @@ export const REGIONS: Region[] = [
     lat: 35.2279,
     lng: 128.6811,
     province: "경상남도",
-    bloom: { month: 3, day: 31 },
-    peak: { month: 4, day: 5 },
-    fall: { month: 4, day: 11 },
     famousSpots: ["진해 군항제", "경화역 벚꽃길", "여좌천"],
   },
   // ── 제주 ──
@@ -194,9 +149,6 @@ export const REGIONS: Region[] = [
     lat: 33.4996,
     lng: 126.5312,
     province: "제주특별자치도",
-    bloom: { month: 3, day: 25 },
-    peak: { month: 3, day: 30 },
-    fall: { month: 4, day: 5 },
     famousSpots: ["녹산로 벚꽃길", "제주 왕벚꽃 축제"],
   },
 ];

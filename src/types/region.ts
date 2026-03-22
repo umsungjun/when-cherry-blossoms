@@ -12,9 +12,9 @@ export interface Region {
   lat: number;
   lng: number;
   province: string;
-  bloom: DateInfo;
-  peak: DateInfo;
-  fall: DateInfo;
+  bloom?: DateInfo;
+  peak?: DateInfo;
+  fall?: DateInfo;
   famousSpots: string[];
 }
 
@@ -28,10 +28,10 @@ export interface PetalFallRisk {
 }
 
 export interface RegionWithStatus extends Region {
-  status: BloomStatus;
-  daysUntilBloom: number;
-  daysUntilPeak: number;
-  daysUntilFall: number;
-  bloomProgress: number; // 0-100
+  status: BloomStatus | "unknown";
+  daysUntilBloom: number | null;
+  daysUntilPeak: number | null;
+  daysUntilFall: number | null;
+  bloomProgress: number; // 0-100, 데이터 없으면 0
   petalFallRisk?: PetalFallRisk;
 }

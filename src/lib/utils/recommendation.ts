@@ -57,7 +57,11 @@ export function scoreRegion(
   else if (risk.level === "medium") reasons.push("⛅ 날씨 양호");
 
   // 만개 D-1 ~ D-3 보너스
-  if (enriched.daysUntilPeak >= 0 && enriched.daysUntilPeak <= 3) {
+  if (
+    enriched.daysUntilPeak !== null &&
+    enriched.daysUntilPeak >= 0 &&
+    enriched.daysUntilPeak <= 3
+  ) {
     score += 10;
     reasons.push(
       `📅 만개까지 ${enriched.daysUntilPeak === 0 ? "오늘" : `D-${enriched.daysUntilPeak}`}`
