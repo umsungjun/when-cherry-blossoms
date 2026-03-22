@@ -23,10 +23,12 @@ export async function fetchWeather(
       "sunset",
     ].join(","),
     forecast_days: "7",
+    // 날짜가 바뀌면 캐시 키가 달라져 자동 갱신
+    _d: new Date().toISOString().slice(0, 10),
   });
 
   const res = await fetch(`${BASE_URL}?${params}`, {
-    next: { revalidate: 1800 }, // 30분 캐시
+    next: { revalidate: 1800 }, // 30분 캐시, 날짜 변경 시 새 캐시
   });
 
   if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
