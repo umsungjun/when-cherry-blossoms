@@ -2,7 +2,7 @@
 
 2026년 전국 벚꽃 개화 예보 서비스. 기상청 예보와 AI 예측 날짜를 비교하고, 낙화 위험도와 AI 여행 추천까지 한 번에 확인할 수 있습니다.
 
-**배포 URL:** https://when-cherry-blossoms.vercel.app
+**배포 URL:** https://when-cherry-blossoms.kro.kr
 
 ---
 

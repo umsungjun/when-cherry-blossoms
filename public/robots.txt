@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://when-cherry-blossoms.vercel.app/sitemap.xml
+Sitemap: https://when-cherry-blossoms.kro.kr/sitemap.xml
