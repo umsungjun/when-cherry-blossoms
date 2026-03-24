@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { HeroSection } from "@/components/home/HeroSection";
+import { HomeJsonLd } from "@/components/seo/JsonLd";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getAIPredictions } from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
@@ -66,6 +67,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <HomeJsonLd />
       <HeroSection />
 
       <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
