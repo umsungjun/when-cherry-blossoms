@@ -69,23 +69,25 @@ export default async function HomePage() {
       <HeroSection />
 
       <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
-        {/* 전국 현황 */}
-        <section>
-          <h2 className="text-text-primary mb-4 flex items-center gap-2 text-lg font-bold">
-            <BarChart3 size={18} className="text-[#ff4da6]" />
-            전국 벚꽃 현황
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {activeStats.map(({ key, icon, color }) => (
-              <span
-                key={key}
-                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold ${color}`}
-              >
-                {icon} {BLOOM_STATUS_LABEL[key]} {stats[key]}곳
-              </span>
-            ))}
-          </div>
-        </section>
+        {/* 전국 현황 — 표시할 데이터가 있을 때만 노출 */}
+        {activeStats.length > 0 && (
+          <section>
+            <h2 className="text-text-primary mb-4 flex items-center gap-2 text-lg font-bold">
+              <BarChart3 size={18} className="text-[#ff4da6]" />
+              전국 벚꽃 현황
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {activeStats.map(({ key, icon, color }) => (
+                <span
+                  key={key}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold ${color}`}
+                >
+                  {icon} {BLOOM_STATUS_LABEL[key]} {stats[key]}곳
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* AI 꽃길 예측 — 기상청 vs AI 비교 */}
         <section>
