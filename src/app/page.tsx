@@ -179,7 +179,7 @@ export default async function HomePage() {
                     {r.famousSpots[0] && (
                       <p className="text-text-muted mt-2.5 flex items-center gap-1 truncate text-xs">
                         <MapPin size={10} className="shrink-0 text-[#ff4da6]" />
-                        {r.famousSpots[0]}
+                        {r.famousSpots[0].name}
                       </p>
                     )}
                   </div>

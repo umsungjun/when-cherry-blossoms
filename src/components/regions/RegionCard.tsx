@@ -61,7 +61,7 @@ export function RegionCard({ region, className }: Props) {
         {region.famousSpots.length > 0 && (
           <p className="text-text-muted flex items-center gap-1 truncate text-xs">
             <MapPin size={11} className="shrink-0 text-[#ff4da6]" />
-            {region.famousSpots[0]}
+            {region.famousSpots[0].name}
           </p>
         )}
       </div>

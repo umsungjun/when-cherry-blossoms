@@ -6,8 +6,10 @@ import {
   CalendarDays,
   ChevronLeft,
   CloudSun,
+  ExternalLink,
   Leaf,
   MapPin,
+  Navigation,
 } from "lucide-react";
 
 import { CommentSection } from "@/components/community/CommentSection";
@@ -111,17 +113,57 @@ export function RegionDetailClient({ region }: Props) {
           <h2 className="text-text-primary mb-3 flex items-center gap-2 text-base font-bold">
             <MapPin size={16} className="text-[#ff4da6]" /> 추천 명소
           </h2>
-          <ul className="space-y-2">
-            {region.famousSpots.map((spot) => (
-              <li
-                key={spot}
-                className="text-text-secondary flex items-center gap-2 text-sm"
-              >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff4da6]" />
-                {spot}
-              </li>
-            ))}
-          </ul>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {region.famousSpots.map((spot) => {
+              const kakaoMapUrl =
+                spot.lat && spot.lng
+                  ? `https://map.kakao.com/link/map/${encodeURIComponent(spot.name)},${spot.lat},${spot.lng}`
+                  : `https://map.kakao.com/link/search/${encodeURIComponent(spot.name)}`;
+
+              return (
+                <a
+                  key={spot.name}
+                  href={kakaoMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group overflow-hidden rounded-xl border border-[rgba(255,77,166,0.15)] transition-all hover:border-[rgba(255,77,166,0.4)] hover:shadow-sm"
+                >
+                  {/* 이미지 */}
+                  {spot.imageUrl && (
+                    <div className="relative aspect-square w-full overflow-hidden">
+                      <img
+                        src={spot.imageUrl}
+                        alt={spot.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
+                    </div>
+                  )}
+                  {/* 하단 정보 */}
+                  <div className="flex items-center gap-3 p-3.5">
+                    <div className="bg-sakura-700 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                      <Navigation
+                        size={16}
+                        className="text-[#ff4da6] transition-transform group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-text-primary truncate text-sm font-semibold">
+                        {spot.name}
+                      </p>
+                      <p className="text-text-muted text-xs">
+                        카카오맵에서 보기
+                      </p>
+                    </div>
+                    <ExternalLink
+                      size={14}
+                      className="text-text-faint shrink-0 transition-colors group-hover:text-[#ff4da6]"
+                    />
+                  </div>
+                </a>
+              );
+            })}
+          </div>
         </div>
       )}
 
