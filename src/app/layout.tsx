@@ -9,8 +9,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://when-cherry-blossoms.kro.kr"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://when-cherry-blossoms.kro.kr"
   ),
   title: {
     default: "벚꽃 언제 필까?",
@@ -36,6 +35,9 @@ export const metadata: Metadata = {
     "벚꽃 구경",
     "벚꽃 여행",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "벚꽃 언제 필까?",
     description: "전국 벚꽃 개화 시기 · 만개 날짜 · 꽃비 예보 · 벚꽃 명소 추천",

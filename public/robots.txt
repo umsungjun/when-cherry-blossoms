@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://when-cherry-blossoms.kro.kr/sitemap.xml
