@@ -35,7 +35,7 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 
 - `/` — 서버 컴포넌트. AI 예측 fetch + 기상청 vs AI 비교 카드 그리드
 - `/regions` — 서버에서 predictions fetch → `RegionsClient`(클라이언트)에 prop 전달
-- `/regions/[regionId]` — 상세 페이지 (날씨, 타임라인, 댓글, 추천)
+- `/regions/[regionId]` — 상세 페이지 (날씨, 타임라인, 댓글, 추천명소 이미지)
 - `/chatbot` — AI 버꼬 채팅 UI
 
 ### API 라우트
@@ -79,8 +79,38 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 - **댓글**: `regions/{regionId}/comments` 컬렉션, `onSnapshot()` 실시간 구독
 - 직접 `initializeApp()` 호출 금지.
 
+## 명소 데이터 & 외부 API
+
+### 명소 구조 (`FamousSpot`)
+
+```typescript
+{ name: string, lat?: number, lng?: number, imageUrl?: string }
+```
+
+- 좌표: Kakao Local API로 1회 수집 → `regions.ts`에 정적 저장 (`scripts/fetch-spot-coords.ts`)
+- 이미지: 한국관광공사 TourAPI(KorService2)로 1회 수집 → `regions.ts`에 정적 저장 (`scripts/fetch-spot-images.ts`)
+- 런타임 API 호출 없음 — 모든 데이터 빌드 시점에 확정
+
+### 외부 API 키 (1회성 스크립트용)
+
+| API | 키 | 용도 |
+|---|---|---|
+| Kakao Local | `KAKAO_REST_API_KEY` | 명소 좌표 검색 |
+| 한국관광공사 TourAPI | `TOUR_API_KEY` | 명소 대표 이미지 |
+
+**TourAPI 주의**: 엔드포인트는 `KorService2` (not KorService1), API 메서드는 `searchKeyword2`.
+
+## 캐싱 전략 요약
+
+| 대상 | TTL | 방식 |
+|---|---|---|
+| AI 예측 | 3시간 | 인메모리 + 파일 (`.cache/ai-predictions.json`) |
+| 날씨 (Open-Meteo) | 30분 | Next.js `revalidate` + 날짜 변경 시 자동 갱신 |
+| 메인/지역 페이지 | 3시간 | Next.js `revalidate = 10800` |
+| 명소 좌표/이미지 | 영구 | `regions.ts` 정적 데이터 |
+
 ## 데이터 소스 로드맵
 
 **현재 (Phase 1)**: `regions.ts` 하드코딩 + Gemini 2.5 Flash AI 예측 날짜 생성
 
-**향후 (Phase 2)**: 기상청 공공 API 연동 시 `regions.ts` → API fetch 교체. `enrichRegion()` 로직 유지, 메인 카드에 기상청 vs AI 두 날짜 나란히 표시 (현재 UI 이미 대응).
+**향후 (Phase 2)**: 기상청 봄꽃개화현황 페이지 크롤링 연동. 기상청 날씨누리 페이지는 JS 동적 렌더링 — 실제 데이터 발표 후 Network 탭에서 내부 API 엔드포인트 확인 필요. `enrichRegion()` 로직 유지, 메인 카드에 기상청 vs AI 두 날짜 나란히 표시 (현재 UI 이미 대응).
