@@ -5,6 +5,13 @@ export interface DateInfo {
   day: number;
 }
 
+export interface FamousSpot {
+  name: string;
+  lat?: number;
+  lng?: number;
+  imageUrl?: string;
+}
+
 export interface Region {
   id: string;
   name: string;
@@ -15,7 +22,7 @@ export interface Region {
   bloom?: DateInfo;
   peak?: DateInfo;
   fall?: DateInfo;
-  famousSpots: string[];
+  famousSpots: FamousSpot[];
 }
 
 export interface PetalFallRisk {
