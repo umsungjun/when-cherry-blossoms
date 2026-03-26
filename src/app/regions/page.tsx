@@ -15,14 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 10800;
+// Vercel Cron으로 하루 1회 AI 예측 갱신 → 24시간 간격으로 재생성
+export const revalidate = 86400;
 
 export default async function RegionsPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const regions = REGIONS.map((r) => enrichRegion(r, today));
-  const predictions = await getAIPredictions(regions);
+  const { data: predictions, updatedAt } = await getAIPredictions(regions);
 
   return (
     <>
@@ -35,7 +36,7 @@ export default async function RegionsPage() {
           },
         ]}
       />
-      <RegionsClient predictions={predictions} />
+      <RegionsClient predictions={predictions} updatedAt={updatedAt} />
     </>
   );
 }

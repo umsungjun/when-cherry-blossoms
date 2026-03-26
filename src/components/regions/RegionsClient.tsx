@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import {
   ChevronRight,
+  Clock,
   Flower,
   Flower2,
   Leaf,
@@ -54,9 +55,10 @@ const STATUS_TABS: {
 
 interface Props {
   predictions: Record<string, RegionPrediction>;
+  updatedAt: number;
 }
 
-export function RegionsClient({ predictions }: Props) {
+export function RegionsClient({ predictions, updatedAt }: Props) {
   const [activeTab, setActiveTab] = useState<BloomStatus | "all">("all");
 
   const today = useMemo(() => {
@@ -96,8 +98,21 @@ export function RegionsClient({ predictions }: Props) {
           <Map size={22} className="text-[#ff4da6]" />
           전국 벚꽃 예보
         </h1>
-        <p className="text-text-muted mt-1 text-sm">
-          2026년 기상청 예보 + AI 예측 · 3시간마다 갱신
+        <p className="text-text-muted mt-1 flex items-center gap-1 text-sm">
+          2026년 기상청 예보 + AI 예측
+          {updatedAt > 0 && (
+            <span className="text-text-faint ml-1 inline-flex items-center gap-1 text-xs">
+              <Clock size={12} />
+              {new Date(updatedAt).toLocaleString("ko-KR", {
+                timeZone: "Asia/Seoul",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              업데이트
+            </span>
+          )}
         </p>
       </div>
 

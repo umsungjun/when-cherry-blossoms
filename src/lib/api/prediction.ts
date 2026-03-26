@@ -13,7 +13,12 @@ export interface RegionPrediction {
   fall: string;
 }
 
-const CACHE_TTL = 3 * 60 * 60 * 1000; // 3시간
+export interface PredictionResult {
+  data: Record<string, RegionPrediction>;
+  updatedAt: number; // 예측 생성 시각 (ms timestamp)
+}
+
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간 (Vercel Cron으로 하루 1회 갱신)
 const CACHE_FILE = path.join(process.cwd(), ".cache", "ai-predictions.json");
 
 // 인메모리 캐시
@@ -119,19 +124,24 @@ JSON 배열만 출력. 16개 전부 반환.
  * 실제 기상 데이터를 분석하여 과학적 근거가 있는 예측 수행
  */
 export async function getAIPredictions(
-  regions: RegionWithStatus[]
-): Promise<Record<string, RegionPrediction>> {
-  // 1순위: 인메모리 캐시
-  if (memCache && Date.now() - memCache.timestamp < CACHE_TTL) {
-    return memCache.data;
+  regions: RegionWithStatus[],
+  options?: { forceRefresh?: boolean }
+): Promise<PredictionResult> {
+  const force = options?.forceRefresh ?? false;
+
+  // 1순위: 인메모리 캐시 (forceRefresh 시 스킵)
+  if (!force && memCache && Date.now() - memCache.timestamp < CACHE_TTL) {
+    return { data: memCache.data, updatedAt: memCache.timestamp };
   }
 
-  // 2순위: 파일 캐시 (서버 재시작 후에도 유효)
-  const fileCache = readFileCache();
-  if (fileCache) {
-    memCache = fileCache;
-    console.log("AI predictions loaded from file cache");
-    return fileCache.data;
+  // 2순위: 파일 캐시 (서버 재시작 후에도 유효, forceRefresh 시 스킵)
+  if (!force) {
+    const fileCache = readFileCache();
+    if (fileCache) {
+      memCache = fileCache;
+      console.log("AI predictions loaded from file cache");
+      return { data: fileCache.data, updatedAt: fileCache.timestamp };
+    }
   }
 
   // 3순위: 기상 데이터 수집 + Gemini API 호출
@@ -183,13 +193,17 @@ export async function getAIPredictions(
     }
 
     // 캐시 저장 (메모리 + 파일)
-    memCache = { data: map, timestamp: Date.now() };
+    const now = Date.now();
+    memCache = { data: map, timestamp: now };
     writeFileCache(map);
-    return map;
+    return { data: map, updatedAt: now };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`AI prediction error: ${msg}`);
     console.error("GEMINI_API_KEY set:", !!process.env.GEMINI_API_KEY);
-    return memCache?.data ?? {};
+    return {
+      data: memCache?.data ?? {},
+      updatedAt: memCache?.timestamp ?? 0,
+    };
   }
 }

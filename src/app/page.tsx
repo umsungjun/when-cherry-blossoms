@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   BarChart3,
   Bot,
+  Clock,
   Flower,
   Flower2,
   Leaf,
@@ -19,15 +20,15 @@ import { REGIONS } from "@/lib/data/regions";
 import { BLOOM_STATUS_LABEL, enrichRegion } from "@/lib/utils/bloom";
 import { BloomStatus } from "@/types/region";
 
-// AI 예측(Gemini 2.5 Flash) 무료 티어 일 20회 → 3시간 간격으로 재생성
-export const revalidate = 10800;
+// Vercel Cron으로 하루 1회 AI 예측 갱신 → 24시간 간격으로 재생성
+export const revalidate = 86400;
 
 export default async function HomePage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const regions = REGIONS.map((r) => enrichRegion(r, today));
-  const predictions = await getAIPredictions(regions);
+  const { data: predictions, updatedAt } = await getAIPredictions(regions);
   const hasPredictions = Object.keys(predictions).length > 0;
 
   const stats: Record<BloomStatus | "unknown", number> = {
@@ -93,22 +94,37 @@ export default async function HomePage() {
 
         {/* AI 꽃길 예측 — 기상청 vs AI 비교 */}
         <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-text-primary flex items-center gap-2 text-lg font-bold">
-              <Flower2 size={18} className="text-[#ff4da6]" />
-              전국 개화 예보
-              {hasPredictions && (
-                <span className="bg-sakura-700 text-accent-light rounded-full px-2 py-0.5 text-xs font-normal">
-                  Gemini 2.5 Flash
-                </span>
-              )}
-            </h2>
-            <Link
-              href="/regions"
-              className="text-text-muted text-xs transition-colors hover:text-[#ff4da6]"
-            >
-              상세 보기 →
-            </Link>
+          <div className="mb-4 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <h2 className="text-text-primary flex items-center gap-2 text-lg font-bold">
+                <Flower2 size={18} className="text-[#ff4da6]" />
+                전국 개화 예보
+                {hasPredictions && (
+                  <span className="bg-sakura-700 text-accent-light rounded-full px-2 py-0.5 text-xs font-normal">
+                    Gemini 2.5 Flash
+                  </span>
+                )}
+              </h2>
+              <Link
+                href="/regions"
+                className="text-text-muted text-xs transition-colors hover:text-[#ff4da6]"
+              >
+                상세 보기 →
+              </Link>
+            </div>
+            {updatedAt > 0 && (
+              <p className="text-text-muted flex items-center gap-1 text-xs">
+                <Clock size={12} />
+                AI 예측 업데이트:{" "}
+                {new Date(updatedAt).toLocaleString("ko-KR", {
+                  timeZone: "Asia/Seoul",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
