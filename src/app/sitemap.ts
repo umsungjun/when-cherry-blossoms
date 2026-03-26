@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { REGIONS } from "@/lib/data/regions";
 
-const BASE_URL = "https://when-cherry-blossoms.kro.kr";
+const BASE_URL = "https://when-cherry-blossoms.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

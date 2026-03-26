@@ -1,6 +1,6 @@
 import { REGIONS } from "@/lib/data/regions";
 
-const BASE_URL = "https://when-cherry-blossoms.kro.kr";
+const BASE_URL = "https://when-cherry-blossoms.vercel.app";
 
 /** 메인 페이지: WebSite + FAQPage 구조화 데이터 */
 export function HomeJsonLd() {

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://when-cherry-blossoms.kro.kr/sitemap.xml",
+    sitemap: "https://when-cherry-blossoms.vercel.app/sitemap.xml",
   };
 }

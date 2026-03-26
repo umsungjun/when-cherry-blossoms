@@ -9,7 +9,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://when-cherry-blossoms.kro.kr"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://when-cherry-blossoms.vercel.app"
   ),
   title: {
     default: "벚꽃 언제 필까?",

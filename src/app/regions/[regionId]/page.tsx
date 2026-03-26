@@ -47,14 +47,14 @@ export default async function RegionDetailPage({ params }: Props) {
     <>
       <BreadcrumbJsonLd
         items={[
-          { name: "홈", url: "https://when-cherry-blossoms.kro.kr" },
+          { name: "홈", url: "https://when-cherry-blossoms.vercel.app" },
           {
             name: "전국 개화 현황",
-            url: "https://when-cherry-blossoms.kro.kr/regions",
+            url: "https://when-cherry-blossoms.vercel.app/regions",
           },
           {
             name: `${region.name} 벚꽃`,
-            url: `https://when-cherry-blossoms.kro.kr/regions/${region.id}`,
+            url: `https://when-cherry-blossoms.vercel.app/regions/${region.id}`,
           },
         ]}
       />
