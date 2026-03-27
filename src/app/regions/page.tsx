@@ -47,7 +47,11 @@ export default async function RegionsPage() {
           },
         ]}
       />
-      <RegionsClient predictions={predictions} updatedAt={updatedAt} />
+      <RegionsClient
+        regions={regions}
+        predictions={predictions}
+        updatedAt={updatedAt}
+      />
     </>
   );
 }

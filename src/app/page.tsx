@@ -90,15 +90,27 @@ export default async function HomePage() {
               <BarChart3 size={18} className="text-[#ff4da6]" />
               전국 벚꽃 현황
             </h2>
-            <div className="flex flex-wrap gap-2">
-              {activeStats.map(({ key, icon, color }) => (
-                <span
-                  key={key}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold ${color}`}
-                >
-                  {icon} {BLOOM_STATUS_LABEL[key]} {stats[key]}곳
-                </span>
-              ))}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {activeStats.map(({ key, icon, color }) => {
+                const names = regions
+                  .filter((r) => r.status === key)
+                  .map((r) => r.name);
+                return (
+                  <div
+                    key={key}
+                    className="card flex items-center gap-3 p-4"
+                  >
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${color}`}
+                    >
+                      {icon} {BLOOM_STATUS_LABEL[key]} {stats[key]}곳
+                    </span>
+                    <p className="text-text-secondary text-sm leading-relaxed">
+                      {names.join(", ")}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
