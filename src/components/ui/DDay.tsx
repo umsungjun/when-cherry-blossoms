@@ -61,7 +61,7 @@ export function DDay({
   if (days === null) {
     return (
       <span className={cn("text-text-muted text-xs", className)}>
-        기상청 데이터 대기 중
+        {label} 날짜 미정
       </span>
     );
   }

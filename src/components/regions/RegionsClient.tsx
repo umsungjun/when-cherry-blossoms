@@ -20,9 +20,8 @@ import { BloomTimeline } from "@/components/regions/BloomTimeline";
 import { DDay } from "@/components/ui/DDay";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { RegionPrediction } from "@/lib/api/prediction";
-import { REGIONS } from "@/lib/data/regions";
-import { BLOOM_STATUS_LABEL, enrichRegion } from "@/lib/utils/bloom";
-import { BloomStatus } from "@/types/region";
+import { BLOOM_STATUS_LABEL } from "@/lib/utils/bloom";
+import { BloomStatus, RegionWithStatus } from "@/types/region";
 
 const STATUS_TABS: {
   key: BloomStatus | "all";
@@ -54,22 +53,13 @@ const STATUS_TABS: {
 ];
 
 interface Props {
+  regions: RegionWithStatus[];
   predictions: Record<string, RegionPrediction>;
   updatedAt: number;
 }
 
-export function RegionsClient({ predictions, updatedAt }: Props) {
+export function RegionsClient({ regions, predictions, updatedAt }: Props) {
   const [activeTab, setActiveTab] = useState<BloomStatus | "all">("all");
-
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-  const regions = useMemo(
-    () => REGIONS.map((r) => enrichRegion(r, today)),
-    [today]
-  );
   const filtered = useMemo(
     () =>
       activeTab === "all"

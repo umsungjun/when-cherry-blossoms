@@ -25,7 +25,7 @@ export function BloomTimeline({ region, className }: Props) {
   const steps = [
     { key: "bloom", label: "개화", date: formatMonthDay(region.bloom), pct: 0 },
     { key: "peak", label: "만개", date: formatMonthDay(region.peak), pct: 50 },
-    { key: "fall", label: "낙화", date: formatMonthDay(region.fall), pct: 100 },
+    { key: "fall", label: "낙화", date: region.fall ? formatMonthDay(region.fall) : "-", pct: 100 },
   ];
 
   const activeIdx =
