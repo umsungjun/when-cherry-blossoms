@@ -58,7 +58,7 @@ export function AIChatPanel() {
             AI 버꼬
           </span>
           <span className="bg-sakura-800 text-accent-light rounded-full px-2 py-0.5 text-xs">
-            Gemini 2.0 Flash
+            Gemini 3.1 Flash Lite
           </span>
         </div>
         {messages.length > 0 && (

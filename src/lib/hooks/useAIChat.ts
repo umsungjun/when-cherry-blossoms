@@ -49,7 +49,7 @@ export function useAIChat() {
       setIsLoading(true);
       setError(null);
 
-      // Gemma API용 history 변환 (시스템 프롬프트 제외한 대화 내역)
+      // Gemini API용 history 변환 (대화 내역)
       const history: ChatHistory[] = messages.map((m) => ({
         role: m.role === "user" ? "user" : "model",
         parts: [{ text: m.content }],

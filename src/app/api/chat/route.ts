@@ -24,17 +24,7 @@ export async function POST(req: NextRequest) {
     const enrichedRegions = REGIONS.map((r) => enrichRegion(r, today));
     const systemPrompt = buildSystemPrompt(enrichedRegions);
 
-    // Gemma는 systemInstruction 미지원 → 첫 메시지로 주입
     const contents = [
-      { role: "user", parts: [{ text: systemPrompt }] },
-      {
-        role: "model",
-        parts: [
-          {
-            text: "네, 벚꽃에 관해 뭐든 알려드릴게요! 무엇이 궁금하신가요? 🌸",
-          },
-        ],
-      },
       ...history.slice(-18), // 최대 18개 이전 메시지
       { role: "user", parts: [{ text: message }] },
     ];
@@ -43,6 +33,7 @@ export async function POST(req: NextRequest) {
       model: CHAT_MODEL,
       contents,
       config: {
+        systemInstruction: systemPrompt,
         maxOutputTokens: 512,
         temperature: 0.7,
       },
