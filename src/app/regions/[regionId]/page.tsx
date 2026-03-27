@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { RegionDetailClient } from "@/components/regions/RegionDetailClient";
 import { BreadcrumbJsonLd, RegionJsonLd } from "@/components/seo/JsonLd";
+import { getKmaBloomData, mergeKmaData } from "@/lib/api/kma";
 import { REGIONS, getRegionById } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { formatMonthDay } from "@/lib/utils/date";
@@ -36,11 +37,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RegionDetailPage({ params }: Props) {
   const { regionId } = await params;
-  const region = getRegionById(regionId);
-  if (!region) notFound();
+  const baseRegion = getRegionById(regionId);
+  if (!baseRegion) notFound();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  // 기상청 개화 데이터 병합
+  const kmaData = await getKmaBloomData();
+  const [region] = mergeKmaData([baseRegion], kmaData);
   const enriched = enrichRegion(region, today);
 
   return (

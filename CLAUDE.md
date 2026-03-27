@@ -44,6 +44,7 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 - `GET /api/weather?lat=X&lng=Y` — Open-Meteo 7일 예보 + 낙화 위험도
 - `GET /api/bloom-status` — 전국 개화 상태
 - `GET /api/recommendation` — 날씨 기반 방문 추천 (scoreRegion 알고리즘)
+- `GET /api/cron/update-predictions` — Vercel Cron 전용. `CRON_SECRET` 인증 필요, `forceRefresh`로 AI 예측 갱신
 
 ## AI 모델 사용 정책
 
@@ -53,9 +54,9 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 | 유저 문답 (AI 버꼬) | `gemma-3-27b-it` | `CHAT_MODEL` | 요청별 |
 
 - 새 AI 호출 추가 시 반드시 위 구분에 따라 올바른 상수를 선택할 것.
-- **Prediction 캐싱**: 인메모리 + `.cache/ai-predictions.json` 파일 이중 캐시 (3시간 TTL). dev 서버 재시작 시에도 파일 캐시에서 즉시 로드.
+- **Prediction 캐싱**: 인메모리 + `.cache/ai-predictions.json` 파일 이중 캐시 (24시간 TTL). Vercel Cron으로 매일 KST 12:00에 `forceRefresh`로 갱신. dev 서버 재시작 시에도 파일 캐시에서 즉시 로드.
 - **Chat**: Gemma는 `systemInstruction` 미지원 → 첫 메시지로 시스템 프롬프트 주입. history 최대 18개.
-- `revalidate = 10800` (3시간) → 일 최대 8회 API 호출로 무료 티어 내 유지.
+- `revalidate = 86400` (24시간) → Vercel Cron이 하루 1회 능동 갱신하므로 ISR은 폴백 역할.
 
 ## 테마 시스템 (다크/라이트)
 
@@ -104,9 +105,9 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 
 | 대상 | TTL | 방식 |
 |---|---|---|
-| AI 예측 | 3시간 | 인메모리 + 파일 (`.cache/ai-predictions.json`) |
+| AI 예측 | 24시간 | 인메모리 + 파일 (`.cache/ai-predictions.json`) + Vercel Cron 매일 갱신 |
 | 날씨 (Open-Meteo) | 30분 | Next.js `revalidate` + 날짜 변경 시 자동 갱신 |
-| 메인/지역 페이지 | 3시간 | Next.js `revalidate = 10800` |
+| 메인/지역 페이지 | 24시간 | Next.js `revalidate = 86400` |
 | 명소 좌표/이미지 | 영구 | `regions.ts` 정적 데이터 |
 
 ## 데이터 소스 로드맵

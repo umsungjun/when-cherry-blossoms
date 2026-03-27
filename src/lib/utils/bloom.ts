@@ -10,7 +10,7 @@ function hasBloomData(region: Region): boolean {
 /** 오늘 날짜 기준 개화 상태 계산 */
 export function getBloomStatus(
   region: Region,
-  today?: Date,
+  today?: Date
 ): BloomStatus | "unknown" {
   if (!hasBloomData(region)) return "unknown";
 
