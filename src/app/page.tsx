@@ -15,6 +15,11 @@ import {
 import { HeroSection } from "@/components/home/HeroSection";
 import { HomeJsonLd } from "@/components/seo/JsonLd";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import {
+  getKmaBloomData,
+  getKmaConfirmedIds,
+  mergeKmaData,
+} from "@/lib/api/kma";
 import { getAIPredictions } from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
 import { BLOOM_STATUS_LABEL, enrichRegion } from "@/lib/utils/bloom";
@@ -27,8 +32,14 @@ export default async function HomePage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const regions = REGIONS.map((r) => enrichRegion(r, today));
-  const { data: predictions, updatedAt } = await getAIPredictions(regions);
+  // 기상청 실시간 개화 데이터 병합 후 상태 계산
+  const kmaData = await getKmaBloomData();
+  const mergedRegions = mergeKmaData([...REGIONS], kmaData);
+  const regions = mergedRegions.map((r) => enrichRegion(r, today));
+  const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
+  const { data: predictions, updatedAt } = await getAIPredictions(regions, {
+    kmaConfirmedIds,
+  });
   const hasPredictions = Object.keys(predictions).length > 0;
 
   const stats: Record<BloomStatus | "unknown", number> = {

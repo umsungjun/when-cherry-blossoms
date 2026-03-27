@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 
 import { RegionsClient } from "@/components/regions/RegionsClient";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import {
+  getKmaBloomData,
+  getKmaConfirmedIds,
+  mergeKmaData,
+} from "@/lib/api/kma";
 import { getAIPredictions } from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
@@ -22,8 +27,14 @@ export default async function RegionsPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const regions = REGIONS.map((r) => enrichRegion(r, today));
-  const { data: predictions, updatedAt } = await getAIPredictions(regions);
+  // 기상청 실시간 개화 데이터 병합 후 상태 계산
+  const kmaData = await getKmaBloomData();
+  const mergedRegions = mergeKmaData([...REGIONS], kmaData);
+  const regions = mergedRegions.map((r) => enrichRegion(r, today));
+  const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
+  const { data: predictions, updatedAt } = await getAIPredictions(regions, {
+    kmaConfirmedIds,
+  });
 
   return (
     <>

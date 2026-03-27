@@ -4,7 +4,7 @@ import path from "path";
 import { RegionWithStatus } from "@/types/region";
 
 import { PREDICTION_MODEL, genAI } from "./gemini";
-import { analyzeAllRegions, RegionWeatherAnalysis } from "./historical-weather";
+import { RegionWeatherAnalysis, analyzeAllRegions } from "./historical-weather";
 
 export interface RegionPrediction {
   regionId: string;
@@ -73,15 +73,18 @@ function buildPredictionPrompt(
     .map((r) => {
       const w = weatherMap.get(r.id);
       if (!w) return null;
-      const kmaLine = r.bloom && r.peak && r.fall
-        ? `기상청:개화${r.bloom.month}/${r.bloom.day},만개${r.peak.month}/${r.peak.day},낙화${r.fall.month}/${r.fall.day}`
-        : `기상청:미발표`;
+      const kmaLine =
+        r.bloom && r.peak && r.fall
+          ? `기상청:개화${r.bloom.month}/${r.bloom.day},만개${r.peak.month}/${r.peak.day},낙화${r.fall.month}/${r.fall.day}`
+          : `기상청:미발표`;
       return [
         `${r.id}|${r.name}|위도${r.lat}`,
         kmaLine,
         `GDD:${w.gddTotal}°C·일|최근7일평균:${w.recentAvgTemp}°C(최고${w.recentAvgTempMax}/최저${w.recentAvgTempMin})`,
         `3월평균:${w.marchAvgTemp}°C|예보7일평균:${w.forecastAvgTemp}°C(+GDD${w.forecastGddAdd})`,
-        w.daysUntilKmaBloom !== null ? `기상청개화까지:${w.daysUntilKmaBloom}일` : `기상청개화일:미정`,
+        w.daysUntilKmaBloom !== null
+          ? `기상청개화까지:${w.daysUntilKmaBloom}일`
+          : `기상청개화일:미정`,
       ].join("|");
     })
     .filter(Boolean)
@@ -115,7 +118,7 @@ ${regionLines}
 5. 기상청 예보와 독립적으로 예측하되, 근거가 있는 차이만 반영
 
 ## 출력 형식
-JSON 배열만 출력. 16개 전부 반환.
+JSON 배열만 출력. ${regions.length}개 전부 반환.
 [{"regionId":"seoul","bloom":"4/3","peak":"4/8","fall":"4/13"},...]`;
 }
 
@@ -125,13 +128,29 @@ JSON 배열만 출력. 16개 전부 반환.
  */
 export async function getAIPredictions(
   regions: RegionWithStatus[],
-  options?: { forceRefresh?: boolean }
+  options?: { forceRefresh?: boolean; kmaConfirmedIds?: Set<string> }
 ): Promise<PredictionResult> {
   const force = options?.forceRefresh ?? false;
+  const kmaConfirmedIds = options?.kmaConfirmedIds ?? new Set();
+
+  // 기상청에서 개화·만개·낙화 모두 확정된 지역은 AI 예측 불필요
+  const needsAI = regions.filter((r) => !kmaConfirmedIds.has(r.id));
+  if (kmaConfirmedIds.size > 0) {
+    console.log(
+      `AI prediction: ${kmaConfirmedIds.size} regions skipped (KMA confirmed), ${needsAI.length} regions need AI`
+    );
+  }
+
+  // 모든 지역이 기상청 확정이면 AI 호출 스킵
+  if (needsAI.length === 0) {
+    return { data: {}, updatedAt: Date.now() };
+  }
 
   // 1순위: 인메모리 캐시 (forceRefresh 시 스킵)
   if (!force && memCache && Date.now() - memCache.timestamp < CACHE_TTL) {
-    return { data: memCache.data, updatedAt: memCache.timestamp };
+    // 캐시에서 KMA 확정 지역 제거
+    const filtered = filterOutKmaConfirmed(memCache.data, kmaConfirmedIds);
+    return { data: filtered, updatedAt: memCache.timestamp };
   }
 
   // 2순위: 파일 캐시 (서버 재시작 후에도 유효, forceRefresh 시 스킵)
@@ -140,20 +159,20 @@ export async function getAIPredictions(
     if (fileCache) {
       memCache = fileCache;
       console.log("AI predictions loaded from file cache");
-      return { data: fileCache.data, updatedAt: fileCache.timestamp };
+      const filtered = filterOutKmaConfirmed(fileCache.data, kmaConfirmedIds);
+      return { data: filtered, updatedAt: fileCache.timestamp };
     }
   }
 
-  // 3순위: 기상 데이터 수집 + Gemini API 호출
+  // 3순위: 기상 데이터 수집 + Gemini API 호출 (KMA 미확정 지역만)
   try {
-    // Open-Meteo에서 올해 실측 기온 + 예보 수집
     console.log("Fetching historical weather data for AI prediction...");
-    const weatherData = await analyzeAllRegions(regions);
+    const weatherData = await analyzeAllRegions(needsAI);
     console.log(
       `Weather analysis complete: ${weatherData.length} regions, avg GDD: ${Math.round(weatherData.reduce((s, w) => s + w.gddTotal, 0) / weatherData.length)}°C·일`
     );
 
-    const prompt = buildPredictionPrompt(regions, weatherData);
+    const prompt = buildPredictionPrompt(needsAI, weatherData);
 
     const response = await genAI.models.generateContent({
       model: PREDICTION_MODEL,
@@ -184,7 +203,7 @@ export async function getAIPredictions(
     }
 
     console.log(
-      `AI predictions: ${predictions.length}/${regions.length} regions (GDD-based)`
+      `AI predictions: ${predictions.length}/${needsAI.length} regions (GDD-based, ${kmaConfirmedIds.size} KMA-confirmed skipped)`
     );
 
     const map: Record<string, RegionPrediction> = {};
@@ -206,4 +225,17 @@ export async function getAIPredictions(
       updatedAt: memCache?.timestamp ?? 0,
     };
   }
+}
+
+/** 캐시 데이터에서 기상청 확정 지역 제거 */
+function filterOutKmaConfirmed(
+  data: Record<string, RegionPrediction>,
+  kmaConfirmedIds: Set<string>
+): Record<string, RegionPrediction> {
+  if (kmaConfirmedIds.size === 0) return data;
+  const filtered: Record<string, RegionPrediction> = {};
+  for (const [id, pred] of Object.entries(data)) {
+    if (!kmaConfirmedIds.has(id)) filtered[id] = pred;
+  }
+  return filtered;
 }

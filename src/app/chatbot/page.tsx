@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 
 export default function ChatbotPage() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col overflow-hidden px-6 py-6" style={{ height: "calc(100dvh - 3.5rem)" }}>
+    <div
+      className="mx-auto flex w-full max-w-3xl flex-col overflow-hidden px-6 py-6"
+      style={{ height: "calc(100dvh - 3.5rem)" }}
+    >
       <div className="mb-4">
         <h1 className="text-text-primary flex items-center gap-2 text-xl font-extrabold">
           <Bot size={22} className="text-[#ff4da6]" />

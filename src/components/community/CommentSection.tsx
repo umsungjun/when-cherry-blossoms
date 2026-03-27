@@ -9,8 +9,8 @@ import { addComment } from "@/lib/firebase/comments";
 import { useComments } from "@/lib/hooks/useComments";
 import { useNickname } from "@/lib/hooks/useNickname";
 import { cn } from "@/lib/utils/cn";
-import { generateNickname } from "@/lib/utils/nickname";
 import { timeAgo } from "@/lib/utils/date";
+import { generateNickname } from "@/lib/utils/nickname";
 
 interface Props {
   regionId: string;
@@ -76,7 +76,7 @@ export function CommentSection({ regionId }: Props) {
             onChange={(e) => setNicknameInput(e.target.value)}
             maxLength={16}
             placeholder="닉네임"
-            className="bg-sakura-950 text-text-primary placeholder:text-text-faint min-w-0 flex-1 rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm outline-none transition-colors focus:border-[#ff4da6]"
+            className="bg-sakura-950 text-text-primary placeholder:text-text-faint min-w-0 flex-1 rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm transition-colors outline-none focus:border-[#ff4da6]"
           />
           <button
             type="button"
@@ -95,14 +95,12 @@ export function CommentSection({ regionId }: Props) {
           maxLength={500}
           rows={3}
           placeholder="현장 이야기를 남겨보세요..."
-          className="bg-sakura-950 text-text-primary placeholder:text-text-faint w-full resize-none rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm outline-none transition-colors focus:border-[#ff4da6]"
+          className="bg-sakura-950 text-text-primary placeholder:text-text-faint w-full resize-none rounded-lg border border-[rgba(255,77,166,0.2)] px-3 py-2 text-sm transition-colors outline-none focus:border-[#ff4da6]"
         />
 
         {/* 하단: 글자 수 + 전송 버튼 */}
         <div className="flex items-center justify-between">
-          <span className="text-text-faint text-xs">
-            {content.length}/500
-          </span>
+          <span className="text-text-faint text-xs">{content.length}/500</span>
           <button
             type="submit"
             disabled={submitting || !content.trim() || !nicknameInput.trim()}
