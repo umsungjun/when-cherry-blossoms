@@ -50,5 +50,5 @@ export function buildSystemPrompt(regions: RegionWithStatus[]): string {
 // 계산·AI 예측용 — 무료 티어 일 20회, 내부 로직에서 사용
 export const PREDICTION_MODEL = "gemini-2.5-flash";
 
-// 유저 문답(AI 버꼬)용 — Gemma 3 27B, 대화 품질 최적화
-export const CHAT_MODEL = "gemma-3-27b-it";
+// 유저 문답(AI 버꼬)용 — Gemini 3.1 Flash Lite Preview
+export const CHAT_MODEL = "gemini-3.1-flash-lite-preview";
