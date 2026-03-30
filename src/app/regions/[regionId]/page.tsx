@@ -12,6 +12,9 @@ interface Props {
   params: Promise<{ regionId: string }>;
 }
 
+// 기상청 데이터 반영을 위해 24시간마다 재생성
+export const revalidate = 86400;
+
 export async function generateStaticParams() {
   return REGIONS.map((r) => ({ regionId: r.id }));
 }
