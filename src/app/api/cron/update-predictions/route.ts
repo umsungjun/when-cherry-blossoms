@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 import {
@@ -38,6 +39,13 @@ export async function GET(req: NextRequest) {
       forceRefresh: true,
       kmaConfirmedIds,
     });
+
+    // 3단계: 캐시 갱신 후 ISR 재검증 트리거
+    revalidatePath("/");
+    revalidatePath("/regions");
+    for (const region of REGIONS) {
+      revalidatePath(`/regions/${region.id}`);
+    }
 
     return NextResponse.json({
       success: true,
