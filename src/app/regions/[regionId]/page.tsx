@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 
 import { RegionDetailClient } from "@/components/regions/RegionDetailClient";
 import { BreadcrumbJsonLd, RegionJsonLd } from "@/components/seo/JsonLd";
-import { getKmaBloomData, mergeKmaData } from "@/lib/api/kma";
+import { getKmaBloomData, getKmaConfirmedIds, mergeKmaData } from "@/lib/api/kma";
+import { getAIPredictions } from "@/lib/api/prediction";
 import { REGIONS, getRegionById } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { formatMonthDay } from "@/lib/utils/date";
@@ -51,6 +52,11 @@ export default async function RegionDetailPage({ params }: Props) {
   const [region] = mergeKmaData([baseRegion], kmaData);
   const enriched = enrichRegion(region, today);
 
+  // AI 낙화 예측 (기상청은 낙화 미제공)
+  const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
+  const { data: predictions } = await getAIPredictions([enriched], { kmaConfirmedIds });
+  const aiFall = predictions[regionId]?.fall;
+
   return (
     <>
       <BreadcrumbJsonLd
@@ -67,7 +73,7 @@ export default async function RegionDetailPage({ params }: Props) {
         ]}
       />
       <RegionJsonLd regionId={region.id} />
-      <RegionDetailClient region={enriched} />
+      <RegionDetailClient region={enriched} aiFall={aiFall} />
     </>
   );
 }

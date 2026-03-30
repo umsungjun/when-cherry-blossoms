@@ -133,24 +133,9 @@ export async function getAIPredictions(
   const force = options?.forceRefresh ?? false;
   const kmaConfirmedIds = options?.kmaConfirmedIds ?? new Set();
 
-  // 기상청에서 개화·만개·낙화 모두 확정된 지역은 AI 예측 불필요
-  const needsAI = regions.filter((r) => !kmaConfirmedIds.has(r.id));
-  if (kmaConfirmedIds.size > 0) {
-    console.log(
-      `AI prediction: ${kmaConfirmedIds.size} regions skipped (KMA confirmed), ${needsAI.length} regions need AI`
-    );
-  }
-
-  // 모든 지역이 기상청 확정이면 AI 호출 스킵
-  if (needsAI.length === 0) {
-    return { data: {}, updatedAt: Date.now() };
-  }
-
   // 1순위: 인메모리 캐시 (forceRefresh 시 스킵)
   if (!force && memCache && Date.now() - memCache.timestamp < CACHE_TTL) {
-    // 캐시에서 KMA 확정 지역 제거
-    const filtered = filterOutKmaConfirmed(memCache.data, kmaConfirmedIds);
-    return { data: filtered, updatedAt: memCache.timestamp };
+    return { data: memCache.data, updatedAt: memCache.timestamp };
   }
 
   // 2순위: 파일 캐시 (서버 재시작 후에도 유효, forceRefresh 시 스킵)
@@ -159,9 +144,31 @@ export async function getAIPredictions(
     if (fileCache) {
       memCache = fileCache;
       console.log("AI predictions loaded from file cache");
-      const filtered = filterOutKmaConfirmed(fileCache.data, kmaConfirmedIds);
-      return { data: filtered, updatedAt: fileCache.timestamp };
+      return { data: fileCache.data, updatedAt: fileCache.timestamp };
     }
+  }
+
+  // 기존 캐시 데이터 확보 (머지용)
+  const existingData = memCache?.data ?? readFileCache()?.data ?? {};
+
+  // 기상청 확정 지역은 캐시에 이미 예측이 있으면 재조회 안 함
+  // 캐시에 없는 경우에만 한 번 예측 생성
+  const needsAI = regions.filter(
+    (r) => !kmaConfirmedIds.has(r.id) || !existingData[r.id]
+  );
+
+  if (kmaConfirmedIds.size > 0) {
+    const skipped = regions.filter(
+      (r) => kmaConfirmedIds.has(r.id) && existingData[r.id]
+    ).length;
+    console.log(
+      `AI prediction: ${skipped} KMA-confirmed regions skipped (cached), ${needsAI.length} regions need AI`
+    );
+  }
+
+  // 모든 지역이 캐시에 있으면 AI 호출 스킵
+  if (needsAI.length === 0) {
+    return { data: existingData, updatedAt: memCache?.timestamp ?? Date.now() };
   }
 
   // 3순위: 기상 데이터 수집 + Gemini API 호출 (KMA 미확정 지역만)
@@ -211,11 +218,14 @@ export async function getAIPredictions(
       map[p.regionId] = p;
     }
 
+    // 기존 캐시와 머지 — 확정 지역의 이전 예측 데이터 보존
+    const merged = { ...existingData, ...map };
+
     // 캐시 저장 (메모리 + 파일)
     const now = Date.now();
-    memCache = { data: map, timestamp: now };
-    writeFileCache(map);
-    return { data: map, updatedAt: now };
+    memCache = { data: merged, timestamp: now };
+    writeFileCache(merged);
+    return { data: merged, updatedAt: now };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`AI prediction error: ${msg}`);
@@ -227,15 +237,3 @@ export async function getAIPredictions(
   }
 }
 
-/** 캐시 데이터에서 기상청 확정 지역 제거 */
-function filterOutKmaConfirmed(
-  data: Record<string, RegionPrediction>,
-  kmaConfirmedIds: Set<string>
-): Record<string, RegionPrediction> {
-  if (kmaConfirmedIds.size === 0) return data;
-  const filtered: Record<string, RegionPrediction> = {};
-  for (const [id, pred] of Object.entries(data)) {
-    if (!kmaConfirmedIds.has(id)) filtered[id] = pred;
-  }
-  return filtered;
-}

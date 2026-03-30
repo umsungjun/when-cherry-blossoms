@@ -10,6 +10,7 @@ import {
   Leaf,
   MapPin,
   Navigation,
+  Sparkles,
 } from "lucide-react";
 
 import { CommentSection } from "@/components/community/CommentSection";
@@ -30,9 +31,10 @@ import { RegionWithStatus } from "@/types/region";
 
 interface Props {
   region: RegionWithStatus;
+  aiFall?: string;
 }
 
-export function RegionDetailClient({ region }: Props) {
+export function RegionDetailClient({ region, aiFall }: Props) {
   const { weather, isLoading } = useWeather(region.lat, region.lng);
   const festivals = getFestivalsByRegion(region.id);
   const today = new Date();
@@ -73,11 +75,6 @@ export function RegionDetailClient({ region }: Props) {
                 region.status === "falling" ||
                 region.status === "done",
             },
-            {
-              label: "낙화",
-              date: formatMonthDay(region.fall),
-              active: region.status === "falling" || region.status === "done",
-            },
           ].map(({ label, date, active }) => (
             <div
               key={label}
@@ -95,6 +92,22 @@ export function RegionDetailClient({ region }: Props) {
               </p>
             </div>
           ))}
+          {/* 낙화 — 기상청 미제공, AI 예측으로 표시 */}
+          <div
+            className={`rounded-xl px-2 py-3 ${region.status === "falling" || region.status === "done" ? "bg-sakura-800" : "bg-sakura-900"}`}
+          >
+            <p
+              className={`flex items-center justify-center gap-0.5 text-xs font-semibold ${region.status === "falling" || region.status === "done" ? "text-[#ff4da6]" : "text-text-faint"}`}
+            >
+              <Sparkles size={10} />
+              AI 낙화
+            </p>
+            <p
+              className={`mt-0.5 text-sm font-bold ${region.status === "falling" || region.status === "done" ? "text-text-primary" : "text-text-dim"}`}
+            >
+              {aiFall ?? "-"}
+            </p>
+          </div>
         </div>
 
         <BloomTimeline region={region} />
