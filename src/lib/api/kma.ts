@@ -142,9 +142,9 @@ async function fetchKmaData(): Promise<Record<string, KmaBloomData>> {
   }
 
   // 개화/만개 상세 날짜는 각 지점별로 개별 조회 필요
-  // 개화된 지점(sts >= 2)만 상세 조회하여 API 호출 최소화
+  // sts와 무관하게 매핑된 모든 지점을 조회 — places[].sts가 "1"이어도 flower 객체에 실제 날짜가 있을 수 있음
   const bloomedPlaces = data.places.filter(
-    (p) => p.sts >= "2" && KMA_TO_REGIONS[p.obsPlace]?.length
+    (p) => KMA_TO_REGIONS[p.obsPlace]?.length
   );
 
   for (const place of bloomedPlaces) {
