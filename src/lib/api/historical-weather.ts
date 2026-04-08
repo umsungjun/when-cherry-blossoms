@@ -195,8 +195,8 @@ export async function analyzeRegionWeather(
 }
 
 /**
- * 전체 16개 지역의 기상 분석을 병렬 실행
- * 4개씩 배치 처리하여 API rate limit 방지
+ * 전체 16개 지역의 기상 분석을 배치 실행
+ * 2개씩 처리 + 배치 간 300ms 딜레이로 Open-Meteo rate limit 방지
  */
 export async function analyzeAllRegions(
   regions: {
@@ -207,10 +207,12 @@ export async function analyzeAllRegions(
     bloom?: { month: number; day: number };
   }[]
 ): Promise<RegionWeatherAnalysis[]> {
-  const BATCH_SIZE = 4;
+  const BATCH_SIZE = 2;
+  const BATCH_DELAY_MS = 300;
   const results: RegionWeatherAnalysis[] = [];
 
   for (let i = 0; i < regions.length; i += BATCH_SIZE) {
+    if (i > 0) await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
     const batch = regions.slice(i, i + BATCH_SIZE);
     const batchResults = await Promise.all(
       batch.map((r) =>
