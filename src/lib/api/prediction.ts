@@ -230,8 +230,9 @@ export async function getAIPredictions(
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`AI prediction error: ${msg}`);
     console.error("GEMINI_API_KEY set:", !!process.env.GEMINI_API_KEY);
+    // existingData를 우선 반환 — memCache가 없어도 파일 캐시 데이터 보존
     return {
-      data: memCache?.data ?? {},
+      data: Object.keys(existingData).length > 0 ? existingData : (memCache?.data ?? {}),
       updatedAt: memCache?.timestamp ?? 0,
     };
   }
