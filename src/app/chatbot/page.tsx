@@ -7,7 +7,7 @@ import { AIChatPanel } from "@/components/chatbot/AIChatPanel";
 export const metadata: Metadata = {
   title: "AI 버꼬",
   description:
-    "Gemini 2.0 Flash AI가 현재 전국 벚꽃 개화 상황을 바탕으로 여행지를 추천해드려요.",
+    "Gemini 3.1 Flash Lite AI가 현재 전국 벚꽃 개화 상황을 바탕으로 여행지를 추천해드려요.",
 };
 
 export default function ChatbotPage() {
@@ -22,7 +22,7 @@ export default function ChatbotPage() {
           AI 버꼬
         </h1>
         <p className="text-text-muted mt-0.5 text-xs">
-          Gemini 2.0 Flash · 현재 개화 현황 반영
+          Gemini 3.1 Flash Lite · 현재 개화 현황 반영
         </p>
       </div>
       <div className="card flex min-h-0 flex-1 flex-col overflow-hidden">
