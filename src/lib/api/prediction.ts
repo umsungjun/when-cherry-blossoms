@@ -1,8 +1,9 @@
-import fs from "fs";
-import path from "path";
-
 import { RegionWithStatus } from "@/types/region";
 
+import {
+  readFirestorePredictions,
+  writeFirestorePredictions,
+} from "../firebase/predictions";
 import { PREDICTION_MODEL, genAI } from "./gemini";
 import { RegionWeatherAnalysis, analyzeAllRegions } from "./historical-weather";
 
@@ -19,39 +20,12 @@ export interface PredictionResult {
 }
 
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간 (Vercel Cron으로 하루 1회 갱신)
-const CACHE_FILE = path.join(process.cwd(), ".cache", "ai-predictions.json");
 
-// 인메모리 캐시
+// 인메모리 캐시 — 동일 인스턴스 내 중복 호출 방지용 (Vercel 인스턴스 간 공유 안 됨)
 let memCache: {
   data: Record<string, RegionPrediction>;
   timestamp: number;
 } | null = null;
-
-/** 파일 캐시 읽기 — dev 서버 재시작 시에도 유지 */
-function readFileCache(): typeof memCache {
-  try {
-    if (!fs.existsSync(CACHE_FILE)) return null;
-    const raw = JSON.parse(fs.readFileSync(CACHE_FILE, "utf-8"));
-    if (Date.now() - raw.timestamp < CACHE_TTL) return raw;
-  } catch {
-    /* 파일 손상 시 무시 */
-  }
-  return null;
-}
-
-/** 파일 캐시 쓰기 */
-function writeFileCache(data: Record<string, RegionPrediction>) {
-  try {
-    const dir = path.dirname(CACHE_FILE);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(
-      CACHE_FILE,
-      JSON.stringify({ data, timestamp: Date.now() })
-    );
-  } catch {
-    /* 쓰기 실패 시 무시 */
-  }
-}
 
 /**
  * 적산온도(GDD) + 기상 예보 기반 프롬프트 생성
@@ -124,7 +98,7 @@ JSON 배열만 출력. ${regions.length}개 전부 반환.
 
 /**
  * Gemini 2.5 Flash + 적산온도 기반 벚꽃 개화 예측
- * 실제 기상 데이터를 분석하여 과학적 근거가 있는 예측 수행
+ * 캐시 우선순위: 인메모리 → Firestore → Gemini API 호출
  */
 export async function getAIPredictions(
   regions: RegionWithStatus[],
@@ -138,21 +112,21 @@ export async function getAIPredictions(
     return { data: memCache.data, updatedAt: memCache.timestamp };
   }
 
-  // 2순위: 파일 캐시 (서버 재시작 후에도 유효, forceRefresh 시 스킵)
+  // 2순위: Firestore 캐시 (인스턴스 재시작 후에도 유효, forceRefresh 시 스킵)
   if (!force) {
-    const fileCache = readFileCache();
-    if (fileCache) {
-      memCache = fileCache;
-      console.log("AI predictions loaded from file cache");
-      return { data: fileCache.data, updatedAt: fileCache.timestamp };
+    const stored = await readFirestorePredictions();
+    if (stored && Date.now() - stored.updatedAt < CACHE_TTL) {
+      memCache = { data: stored.data, timestamp: stored.updatedAt };
+      console.log("AI predictions loaded from Firestore cache");
+      return { data: stored.data, updatedAt: stored.updatedAt };
     }
   }
 
-  // 기존 캐시 데이터 확보 (머지용)
-  const existingData = memCache?.data ?? readFileCache()?.data ?? {};
+  // 기존 캐시 데이터 확보 (머지용) — Firestore에서 TTL 무관하게 읽기
+  const existingStored = await readFirestorePredictions();
+  const existingData = memCache?.data ?? existingStored?.data ?? {};
 
   // 기상청 확정 지역은 캐시에 이미 예측이 있으면 재조회 안 함
-  // 캐시에 없는 경우에만 한 번 예측 생성
   const needsAI = regions.filter(
     (r) => !kmaConfirmedIds.has(r.id) || !existingData[r.id]
   );
@@ -168,7 +142,8 @@ export async function getAIPredictions(
 
   // 모든 지역이 캐시에 있으면 AI 호출 스킵
   if (needsAI.length === 0) {
-    return { data: existingData, updatedAt: memCache?.timestamp ?? Date.now() };
+    const ts = memCache?.timestamp ?? existingStored?.updatedAt ?? Date.now();
+    return { data: existingData, updatedAt: ts };
   }
 
   // 3순위: 기상 데이터 수집 + Gemini API 호출 (KMA 미확정 지역만)
@@ -221,20 +196,19 @@ export async function getAIPredictions(
     // 기존 캐시와 머지 — 확정 지역의 이전 예측 데이터 보존
     const merged = { ...existingData, ...map };
 
-    // 캐시 저장 (메모리 + 파일)
+    // 캐시 저장 (메모리 + Firestore)
     const now = Date.now();
     memCache = { data: merged, timestamp: now };
-    writeFileCache(merged);
+    await writeFirestorePredictions(merged, now);
     return { data: merged, updatedAt: now };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`AI prediction error: ${msg}`);
     console.error("GEMINI_API_KEY set:", !!process.env.GEMINI_API_KEY);
-    // existingData를 우선 반환 — memCache가 없어도 파일 캐시 데이터 보존
-    return {
-      data: Object.keys(existingData).length > 0 ? existingData : (memCache?.data ?? {}),
-      updatedAt: memCache?.timestamp ?? 0,
-    };
+    // existingData 우선 반환 — Firestore 데이터 보존
+    const fallbackData =
+      Object.keys(existingData).length > 0 ? existingData : (memCache?.data ?? {});
+    const fallbackTs = memCache?.timestamp ?? existingStored?.updatedAt ?? 0;
+    return { data: fallbackData, updatedAt: fallbackTs };
   }
 }
-
