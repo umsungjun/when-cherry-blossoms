@@ -58,7 +58,7 @@ export function AIChatPanel() {
             AI 버꼬
           </span>
           <span className="bg-sakura-800 text-accent-light rounded-full px-2 py-0.5 text-xs">
-            Gemini 3.1 Flash Lite
+            Gemma 4 31B
           </span>
         </div>
         {messages.length > 0 && (
@@ -73,7 +73,7 @@ export function AIChatPanel() {
       </div>
 
       {/* 메시지 영역 */}
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+      <div className="flex-1 space-y-3 overflow-x-hidden overflow-y-auto p-4">
         {messages.length === 0 && (
           <div className="space-y-3 py-4">
             <p className="text-text-muted flex items-center justify-center gap-1.5 text-center text-sm">
@@ -104,7 +104,7 @@ export function AIChatPanel() {
           >
             <div
               className={cn(
-                "max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+                "max-w-[80%] min-w-0 rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed wrap-break-word",
                 msg.role === "user"
                   ? "rounded-tr-sm bg-[#ff4da6] text-white"
                   : "bg-sakura-900 text-text-primary rounded-tl-sm border border-[rgba(255,77,166,0.2)]"
