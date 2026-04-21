@@ -11,7 +11,7 @@
 - **기상청 vs AI 개화 비교** — 전국 16개 지역의 기상청 예보 + 적산온도(GDD) 기반 Gemini 2.5 Flash AI 예측 날짜를 나란히 표시
 - **적산온도 기반 AI 예측** — Open-Meteo Historical API로 올해 2~3월 실측 기온을 수집하고, 위도별 GDD 임계값을 기반으로 과학적 개화 예측
 - **낙화 위험도** — Open-Meteo 날씨 데이터(강수량·풍속·돌풍) 기반 실시간 위험도 산출
-- **AI 버꼬** — Gemini 3.1 Flash Lite 기반 AI 챗봇, 벚꽃에 관한 질문에 답변
+- **AI 버꼬** — Gemma 4 31B 기반 AI 챗봇, 벚꽃에 관한 질문에 답변
 - **다크 / 라이트 모드** — 헤더 토글 버튼으로 전환 (Dark Sakura 테마)
 
 ## 기술 스택
@@ -21,7 +21,7 @@
 | Framework | Next.js 16 (App Router) |
 | Styling | Tailwind CSS v4 |
 | AI (예측) | Google Gemini 2.5 Flash |
-| AI (챗봇) | Google Gemini 3.1 Flash Lite |
+| AI (챗봇) | Google Gemma 4 31B |
 | 날씨 | Open-Meteo API |
 | 댓글 | Firebase Firestore |
 | 분석 | Microsoft Clarity |

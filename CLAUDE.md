@@ -40,7 +40,7 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 
 ### API 라우트
 
-- `POST /api/chat` — Gemma 3 27B 유저 대화 (시스템 프롬프트에 현재 개화 현황 주입)
+- `POST /api/chat` — Gemma 4 31B 유저 대화 (시스템 프롬프트에 현재 개화 현황 주입)
 - `GET /api/weather?lat=X&lng=Y` — Open-Meteo 7일 예보 + 낙화 위험도
 - `GET /api/bloom-status` — 전국 개화 상태
 - `GET /api/recommendation` — 날씨 기반 방문 추천 (scoreRegion 알고리즘)
@@ -51,7 +51,7 @@ RegionWithStatus (status, bloomProgress, daysUntil* 런타임 계산)
 | 용도 | 모델 | 상수 | 제한 |
 |---|---|---|---|
 | 계산·예측 (내부 로직) | `gemini-2.5-flash` | `PREDICTION_MODEL` | 무료 20회/일 |
-| 유저 문답 (AI 버꼬) | `gemma-3-27b-it` | `CHAT_MODEL` | 요청별 |
+| 유저 문답 (AI 버꼬) | `gemma-4-31b-it` | `CHAT_MODEL` | 요청별 |
 
 - 새 AI 호출 추가 시 반드시 위 구분에 따라 올바른 상수를 선택할 것.
 - **Prediction 캐싱**: 인메모리 + `.cache/ai-predictions.json` 파일 이중 캐시 (24시간 TTL). Vercel Cron으로 매일 KST 12:00에 `forceRefresh`로 갱신. dev 서버 재시작 시에도 파일 캐시에서 즉시 로드.
