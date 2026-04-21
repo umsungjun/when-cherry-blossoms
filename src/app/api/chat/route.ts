@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { CHAT_MODEL, buildSystemPrompt, genAI } from "@/lib/api/gemini";
 import { REGIONS } from "@/lib/data/regions";
+import { readFirestorePredictions } from "@/lib/firebase/predictions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { ChatHistory } from "@/types/chat";
+import { DateInfo } from "@/types/region";
+
+const parseDate = (s: string): DateInfo => {
+  const [month, day] = s.split("/").map(Number);
+  return { month, day };
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,9 +26,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 현재 개화 현황 주입
+    // AI 예측 캐시에서 bloom/peak/fall 날짜를 가져와 regions에 머지
     const today = new Date();
-    const enrichedRegions = REGIONS.map((r) => enrichRegion(r, today));
+    const predResult = await readFirestorePredictions();
+    const predData = predResult?.data ?? {};
+
+    const enrichedRegions = REGIONS.map((r) => {
+      const pred = predData[r.id];
+      if (!pred) return enrichRegion(r, today);
+      return enrichRegion(
+        {
+          ...r,
+          bloom: parseDate(pred.bloom),
+          peak: parseDate(pred.peak),
+          fall: parseDate(pred.fall),
+        },
+        today
+      );
+    });
+
     const systemPrompt = buildSystemPrompt(enrichedRegions);
 
     // Gemma는 systemInstruction 미지원 → 첫 번째 user/model 턴으로 대체
