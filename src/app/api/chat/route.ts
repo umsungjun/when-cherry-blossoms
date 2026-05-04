@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { CHAT_MODEL, buildSystemPrompt, genAI } from "@/lib/api/gemini";
+import { mergeRegionWithPrediction } from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
 import { readFirestorePredictions } from "@/lib/firebase/predictions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { ChatHistory } from "@/types/chat";
-import { DateInfo } from "@/types/region";
-
-const parseDate = (s: string): DateInfo => {
-  const [month, day] = s.split("/").map(Number);
-  return { month, day };
-};
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,16 +28,7 @@ export async function POST(req: NextRequest) {
 
     const enrichedRegions = REGIONS.map((r) => {
       const pred = predData[r.id];
-      if (!pred) return enrichRegion(r, today);
-      return enrichRegion(
-        {
-          ...r,
-          bloom: parseDate(pred.bloom),
-          peak: parseDate(pred.peak),
-          fall: parseDate(pred.fall),
-        },
-        today
-      );
+      return enrichRegion(pred ? mergeRegionWithPrediction(r, pred) : r, today);
     });
 
     const systemPrompt = buildSystemPrompt(enrichedRegions);
