@@ -20,7 +20,10 @@ import {
   getKmaConfirmedIds,
   mergeKmaData,
 } from "@/lib/api/kma";
-import { getAIPredictions } from "@/lib/api/prediction";
+import {
+  getAIPredictions,
+  mergeRegionWithPrediction,
+} from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
 import { BLOOM_STATUS_LABEL, enrichRegion } from "@/lib/utils/bloom";
 import { BloomStatus } from "@/types/region";
@@ -35,10 +38,24 @@ export default async function HomePage() {
   // 기상청 실시간 개화 데이터 병합 후 상태 계산
   const kmaData = await getKmaBloomData();
   const mergedRegions = mergeKmaData([...REGIONS], kmaData);
-  const regions = mergedRegions.map((r) => enrichRegion(r, today));
+  const baseRegions = mergedRegions.map((r) => enrichRegion(r, today));
   const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
-  const { data: predictions, updatedAt } = await getAIPredictions(regions, {
+  const { data: predictions, updatedAt } = await getAIPredictions(baseRegions, {
     kmaConfirmedIds,
+  });
+  // KMA 날짜 유지, AI 날짜 기반 status 필드만 덮어쓰기
+  const regions = mergedRegions.map((r, i) => {
+    const pred = predictions[r.id];
+    if (!pred) return baseRegions[i];
+    const ai = enrichRegion(mergeRegionWithPrediction(r, pred), today);
+    return {
+      ...baseRegions[i],
+      status: ai.status,
+      bloomProgress: ai.bloomProgress,
+      daysUntilBloom: ai.daysUntilBloom,
+      daysUntilPeak: ai.daysUntilPeak,
+      daysUntilFall: ai.daysUntilFall,
+    };
   });
   const hasPredictions = Object.keys(predictions).length > 0;
 
@@ -96,10 +113,7 @@ export default async function HomePage() {
                   .filter((r) => r.status === key)
                   .map((r) => r.name);
                 return (
-                  <div
-                    key={key}
-                    className="card flex items-center gap-3 p-4"
-                  >
+                  <div key={key} className="card flex items-center gap-3 p-4">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${color}`}
                     >

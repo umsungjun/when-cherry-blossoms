@@ -1,4 +1,4 @@
-import { RegionWithStatus } from "@/types/region";
+import { DateInfo, Region, RegionWithStatus } from "@/types/region";
 
 import {
   readFirestorePredictions,
@@ -18,6 +18,21 @@ export interface PredictionResult {
   data: Record<string, RegionPrediction>;
   updatedAt: number; // 예측 생성 시각 (ms timestamp)
 }
+
+const parseDate = (s: string): DateInfo => {
+  const [month, day] = s.split("/").map(Number);
+  return { month, day };
+};
+
+export const mergeRegionWithPrediction = (
+  region: Region,
+  pred: RegionPrediction
+): Region => ({
+  ...region,
+  bloom: parseDate(pred.bloom),
+  peak: parseDate(pred.peak),
+  fall: parseDate(pred.fall),
+});
 
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간 (Vercel Cron으로 하루 1회 갱신)
 
@@ -207,7 +222,9 @@ export async function getAIPredictions(
     console.error("GEMINI_API_KEY set:", !!process.env.GEMINI_API_KEY);
     // existingData 우선 반환 — Firestore 데이터 보존
     const fallbackData =
-      Object.keys(existingData).length > 0 ? existingData : (memCache?.data ?? {});
+      Object.keys(existingData).length > 0
+        ? existingData
+        : (memCache?.data ?? {});
     const fallbackTs = memCache?.timestamp ?? existingStored?.updatedAt ?? 0;
     return { data: fallbackData, updatedAt: fallbackTs };
   }

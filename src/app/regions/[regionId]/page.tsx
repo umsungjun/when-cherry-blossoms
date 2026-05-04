@@ -3,8 +3,15 @@ import { notFound } from "next/navigation";
 
 import { RegionDetailClient } from "@/components/regions/RegionDetailClient";
 import { BreadcrumbJsonLd, RegionJsonLd } from "@/components/seo/JsonLd";
-import { getKmaBloomData, getKmaConfirmedIds, mergeKmaData } from "@/lib/api/kma";
-import { getAIPredictions } from "@/lib/api/prediction";
+import {
+  getKmaBloomData,
+  getKmaConfirmedIds,
+  mergeKmaData,
+} from "@/lib/api/kma";
+import {
+  getAIPredictions,
+  mergeRegionWithPrediction,
+} from "@/lib/api/prediction";
 import { REGIONS, getRegionById } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
 import { formatMonthDay } from "@/lib/utils/date";
@@ -50,12 +57,27 @@ export default async function RegionDetailPage({ params }: Props) {
   // 기상청 개화 데이터 병합
   const kmaData = await getKmaBloomData();
   const [region] = mergeKmaData([baseRegion], kmaData);
-  const enriched = enrichRegion(region, today);
+  const baseEnriched = enrichRegion(region, today);
 
-  // AI 낙화 예측 (기상청은 낙화 미제공)
+  // AI 낙화 예측 (기상청은 낙화 미제공) → AI 날짜로 status 재계산
   const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
-  const { data: predictions } = await getAIPredictions([enriched], { kmaConfirmedIds });
-  const aiFall = predictions[regionId]?.fall;
+  const { data: predictions } = await getAIPredictions([baseEnriched], {
+    kmaConfirmedIds,
+  });
+  const pred = predictions[regionId];
+  let enriched = baseEnriched;
+  if (pred) {
+    const ai = enrichRegion(mergeRegionWithPrediction(region, pred), today);
+    enriched = {
+      ...baseEnriched,
+      status: ai.status,
+      bloomProgress: ai.bloomProgress,
+      daysUntilBloom: ai.daysUntilBloom,
+      daysUntilPeak: ai.daysUntilPeak,
+      daysUntilFall: ai.daysUntilFall,
+    };
+  }
+  const aiFall = pred?.fall;
 
   return (
     <>

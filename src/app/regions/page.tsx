@@ -7,7 +7,10 @@ import {
   getKmaConfirmedIds,
   mergeKmaData,
 } from "@/lib/api/kma";
-import { getAIPredictions } from "@/lib/api/prediction";
+import {
+  getAIPredictions,
+  mergeRegionWithPrediction,
+} from "@/lib/api/prediction";
 import { REGIONS } from "@/lib/data/regions";
 import { enrichRegion } from "@/lib/utils/bloom";
 
@@ -30,10 +33,24 @@ export default async function RegionsPage() {
   // 기상청 실시간 개화 데이터 병합 후 상태 계산
   const kmaData = await getKmaBloomData();
   const mergedRegions = mergeKmaData([...REGIONS], kmaData);
-  const regions = mergedRegions.map((r) => enrichRegion(r, today));
+  const baseRegions = mergedRegions.map((r) => enrichRegion(r, today));
   const kmaConfirmedIds = getKmaConfirmedIds(kmaData);
-  const { data: predictions, updatedAt } = await getAIPredictions(regions, {
+  const { data: predictions, updatedAt } = await getAIPredictions(baseRegions, {
     kmaConfirmedIds,
+  });
+  // KMA 날짜 유지, AI 날짜 기반 status 필드만 덮어쓰기
+  const regions = mergedRegions.map((r, i) => {
+    const pred = predictions[r.id];
+    if (!pred) return baseRegions[i];
+    const ai = enrichRegion(mergeRegionWithPrediction(r, pred), today);
+    return {
+      ...baseRegions[i],
+      status: ai.status,
+      bloomProgress: ai.bloomProgress,
+      daysUntilBloom: ai.daysUntilBloom,
+      daysUntilPeak: ai.daysUntilPeak,
+      daysUntilFall: ai.daysUntilFall,
+    };
   });
 
   return (
