@@ -1,4 +1,4 @@
-import { Github, Linkedin } from "lucide-react";
+import { Github, Globe, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -28,6 +28,16 @@ export function Footer() {
         >
           <Linkedin size={14} />
           frontend-developer-umsungjun
+        </a>
+        {/* noreferrer 를 빼야 umsungjun.com 유입 경로에 이 사이트가 잡힌다 */}
+        <a
+          href="https://umsungjun.com"
+          target="_blank"
+          rel="noopener"
+          className="text-text-muted flex items-center gap-1.5 transition-colors hover:text-[#ff4da6]"
+        >
+          <Globe size={14} />
+          umsungjun.com
         </a>
       </div>
     </footer>
